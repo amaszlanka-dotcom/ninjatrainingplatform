@@ -3,958 +3,610 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>TrainIQ — Customer Service Training Platform</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<title>TrainIQ</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
-:root{
-  --brand:#1a56db;--brand-lt:#e8f0fe;--brand-mid:#3b82f6;
-  --accent:#0ea5e9;--success:#10b981;--warning:#f59e0b;--danger:#ef4444;
-  --bg:#f8fafc;--surface:#ffffff;--sidebar:#0f172a;
-  --sidebar-item:rgba(255,255,255,0.07);--sidebar-active:rgba(255,255,255,0.15);
-  --text:#0f172a;--text-2:#475569;--text-3:#94a3b8;--border:#e2e8f0;--radius:10px;
-}
+:root{--brand:#1a56db;--brand-lt:#e8f0fe;--success:#10b981;--warning:#f59e0b;--danger:#ef4444;--bg:#f8fafc;--surface:#fff;--sidebar:#0f172a;--si:rgba(255,255,255,0.07);--sa:rgba(255,255,255,0.15);--text:#0f172a;--t2:#475569;--t3:#94a3b8;--border:#e2e8f0;--r:10px}
 body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
-.app-shell{display:flex;height:100vh;overflow:hidden}
+.shell{display:flex;height:100vh;overflow:hidden}
 .sidebar{width:220px;min-width:220px;background:var(--sidebar);display:flex;flex-direction:column;overflow-y:auto}
 .main{flex:1;overflow-y:auto;background:var(--bg)}
-.sidebar-brand{padding:20px 20px 16px;border-bottom:1px solid rgba(255,255,255,0.08)}
+.sb-brand{padding:20px 20px 16px;border-bottom:1px solid rgba(255,255,255,0.08)}
 .logo{display:flex;align-items:center;gap:9px}
-.logo-icon{width:32px;height:32px;background:var(--brand);border-radius:8px;display:flex;align-items:center;justify-content:center}
-.logo-icon i{color:#fff;font-size:17px}
-.logo-text{font-size:16px;font-weight:600;color:#fff;letter-spacing:-0.3px}
-.logo-text span{color:#60a5fa}
-.sidebar-section{padding:14px 12px 6px}
-.sidebar-section-label{font-size:10px;font-weight:600;color:rgba(255,255,255,0.3);letter-spacing:1px;text-transform:uppercase;padding:0 8px 8px}
-.sidebar-item{display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:7px;cursor:pointer;transition:background 0.15s;color:rgba(255,255,255,0.65);font-size:13.5px;margin-bottom:2px}
-.sidebar-item:hover{background:var(--sidebar-item);color:rgba(255,255,255,0.9)}
-.sidebar-item.active{background:var(--sidebar-active);color:#fff;font-weight:500}
-.sidebar-item i{font-size:16px;width:18px;text-align:center}
-.sidebar-item .badge{margin-left:auto;background:var(--brand);color:#fff;font-size:10px;padding:2px 6px;border-radius:10px;font-weight:600}
-.sidebar-footer{margin-top:auto;padding:12px;border-top:1px solid rgba(255,255,255,0.08)}
-.sidebar-user{display:flex;align-items:center;gap:9px;padding:8px;border-radius:7px;cursor:pointer}
-.sidebar-user:hover{background:var(--sidebar-item)}
-.avatar{width:30px;height:30px;border-radius:50%;background:#1e40af;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;color:#fff;flex-shrink:0}
-.user-info .name{font-size:12.5px;color:#fff;font-weight:500}
-.user-info .role{font-size:11px;color:rgba(255,255,255,0.4)}
+.logo-ic{width:32px;height:32px;background:var(--brand);border-radius:8px;display:flex;align-items:center;justify-content:center}
+.logo-ic i{color:#fff;font-size:17px}
+.logo-tx{font-size:16px;font-weight:600;color:#fff}
+.logo-tx span{color:#60a5fa}
+.sb-sec{padding:14px 12px 6px}
+.sb-lbl{font-size:10px;font-weight:600;color:rgba(255,255,255,0.3);letter-spacing:1px;text-transform:uppercase;padding:0 8px 8px}
+.si{display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:7px;cursor:pointer;transition:background .15s;color:rgba(255,255,255,0.65);font-size:13.5px;margin-bottom:2px}
+.si:hover{background:var(--si);color:rgba(255,255,255,0.9)}
+.si.active{background:var(--sa);color:#fff;font-weight:500}
+.si i{font-size:16px;width:18px;text-align:center}
+.sb-foot{margin-top:auto;padding:12px;border-top:1px solid rgba(255,255,255,0.08)}
+.sb-user{display:flex;align-items:center;gap:9px;padding:8px;border-radius:7px}
+.av{width:30px;height:30px;border-radius:50%;background:#1e40af;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;color:#fff;flex-shrink:0}
+.un{font-size:12.5px;color:#fff;font-weight:500}
+.ur{font-size:11px;color:rgba(255,255,255,0.4)}
 .page{display:none;padding:28px 32px}
 .page.active{display:block}
 .topbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:24px}
-.topbar-left h1{font-size:20px;font-weight:600;letter-spacing:-0.4px}
-.topbar-left p{font-size:13px;color:var(--text-2);margin-top:2px}
-.topbar-right{display:flex;gap:10px;align-items:center}
-.btn{display:inline-flex;align-items:center;gap:6px;padding:8px 16px;border-radius:8px;font-size:13.5px;font-weight:500;cursor:pointer;border:none;transition:all 0.15s;font-family:'DM Sans',sans-serif}
-.btn-primary{background:var(--brand);color:#fff}
-.btn-primary:hover{background:#1648c8}
-.btn-secondary{background:var(--surface);color:var(--text);border:1px solid var(--border)}
-.btn-secondary:hover{background:var(--bg)}
-.btn-success{background:var(--success);color:#fff}
-.btn-danger{background:var(--danger);color:#fff}
-.btn-ghost{background:transparent;color:var(--text-2);padding:6px 10px}
-.btn-ghost:hover{background:var(--bg);color:var(--text)}
-.btn-sm{padding:5px 11px;font-size:12.5px}
+.topbar h1{font-size:20px;font-weight:600;letter-spacing:-.4px}
+.topbar p{font-size:13px;color:var(--t2);margin-top:2px}
+.tr{display:flex;gap:10px;align-items:center}
+.btn{display:inline-flex;align-items:center;gap:6px;padding:8px 16px;border-radius:8px;font-size:13.5px;font-weight:500;cursor:pointer;border:none;transition:all .15s;font-family:'DM Sans',sans-serif}
+.bp{background:var(--brand);color:#fff}.bp:hover{background:#1648c8}
+.bs{background:var(--surface);color:var(--text);border:1px solid var(--border)}.bs:hover{background:var(--bg)}
+.bd{background:var(--danger);color:#fff}
+.bg{background:transparent;color:var(--t2);padding:6px 10px}.bg:hover{background:var(--bg)}
+.bsm{padding:5px 11px;font-size:12.5px}
 .btn i{font-size:15px}
-.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:20px}
-.stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:24px}
-.stat-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:16px 18px}
-.stat-card .label{font-size:12px;color:var(--text-3);font-weight:500;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:8px;display:flex;align-items:center;gap:6px}
-.stat-card .value{font-size:26px;font-weight:600;letter-spacing:-0.5px}
-.stat-card .change{font-size:12px;margin-top:4px}
-.change.up{color:var(--success)}.change.down{color:var(--danger)}
-.table-wrap{overflow-x:auto}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:20px}
+.sg{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:24px}
+.sc{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:16px 18px}
+.sc .lbl{font-size:12px;color:var(--t3);font-weight:500;text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px}
+.sc .val{font-size:26px;font-weight:600;letter-spacing:-.5px}
 table{width:100%;border-collapse:collapse;font-size:13.5px}
-thead th{font-size:11.5px;font-weight:600;color:var(--text-3);text-transform:uppercase;letter-spacing:0.5px;padding:10px 12px;border-bottom:1px solid var(--border);text-align:left;white-space:nowrap}
+thead th{font-size:11.5px;font-weight:600;color:var(--t3);text-transform:uppercase;letter-spacing:.5px;padding:10px 12px;border-bottom:1px solid var(--border);text-align:left;white-space:nowrap}
 tbody td{padding:11px 12px;border-bottom:1px solid var(--border);vertical-align:middle}
 tbody tr:last-child td{border-bottom:none}
 tbody tr:hover td{background:#f8fafc}
-.badge-status{display:inline-flex;align-items:center;gap:4px;padding:3px 9px;border-radius:20px;font-size:11.5px;font-weight:500}
-.badge-success{background:#d1fae5;color:#065f46}
-.badge-warning{background:#fef3c7;color:#92400e}
-.badge-danger{background:#fee2e2;color:#991b1b}
-.badge-info{background:#dbeafe;color:#1e40af}
-.badge-gray{background:#f1f5f9;color:#475569}
-.score-bar{background:#e2e8f0;border-radius:4px;height:5px;overflow:hidden}
-.score-fill{height:100%;border-radius:4px}
-.fill-green{background:var(--success)}.fill-amber{background:var(--warning)}.fill-red{background:var(--danger)}.fill-blue{background:var(--brand)}
-.two-col{display:grid;grid-template-columns:1fr 1fr;gap:16px}
-.three-col{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px}
-.main-side{display:grid;grid-template-columns:1fr 320px;gap:16px}
-.form-group{margin-bottom:16px}
-.form-label{font-size:13px;font-weight:500;color:var(--text-2);display:block;margin-bottom:6px}
-.form-input{width:100%;padding:9px 12px;border:1px solid var(--border);border-radius:8px;font-size:13.5px;font-family:'DM Sans',sans-serif;color:var(--text);background:var(--surface);transition:border 0.15s}
-.form-input:focus{outline:none;border-color:var(--brand)}
-.form-select{width:100%;padding:9px 12px;border:1px solid var(--border);border-radius:8px;font-size:13.5px;font-family:'DM Sans',sans-serif;color:var(--text);background:var(--surface);cursor:pointer}
-.form-textarea{width:100%;padding:9px 12px;border:1px solid var(--border);border-radius:8px;font-size:13.5px;font-family:'DM Sans',sans-serif;color:var(--text);resize:vertical;min-height:90px}
-.upload-zone{border:2px dashed var(--border);border-radius:var(--radius);padding:40px;text-align:center;cursor:pointer;transition:all 0.2s}
-.upload-zone:hover{border-color:var(--brand);background:var(--brand-lt)}
-.upload-zone i{font-size:36px;color:var(--brand);margin-bottom:12px;display:block}
-.upload-title{font-size:15px;font-weight:500;margin-bottom:4px}
-.upload-sub{font-size:13px;color:var(--text-3)}
+.badge{display:inline-flex;align-items:center;padding:3px 9px;border-radius:20px;font-size:11.5px;font-weight:500}
+.bg-s{background:#d1fae5;color:#065f46}
+.bg-w{background:#fef3c7;color:#92400e}
+.bg-d{background:#fee2e2;color:#991b1b}
+.bg-i{background:#dbeafe;color:#1e40af}
+.bg-g{background:#f1f5f9;color:#475569}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.ms{display:grid;grid-template-columns:1fr 300px;gap:16px}
+.fg{margin-bottom:16px}
+.fl{font-size:13px;font-weight:500;color:var(--t2);display:block;margin-bottom:6px}
+.fi{width:100%;padding:9px 12px;border:1px solid var(--border);border-radius:8px;font-size:13.5px;font-family:'DM Sans',sans-serif;color:var(--text);background:var(--surface);transition:border .15s}
+.fi:focus{outline:none;border-color:var(--brand)}
+.fsel{width:100%;padding:9px 12px;border:1px solid var(--border);border-radius:8px;font-size:13.5px;font-family:'DM Sans',sans-serif;color:var(--text);background:var(--surface);cursor:pointer}
+.fta{width:100%;padding:9px 12px;border:1px solid var(--border);border-radius:8px;font-size:13.5px;font-family:'DM Sans',sans-serif;color:var(--text);resize:vertical;background:var(--surface)}
+.fta:focus{outline:none;border-color:var(--brand)}
 .tabs{display:flex;gap:4px;border-bottom:1px solid var(--border);margin-bottom:20px}
-.tab{padding:8px 16px;font-size:13.5px;font-weight:500;cursor:pointer;border-bottom:2px solid transparent;color:var(--text-3);transition:all 0.15s;margin-bottom:-1px}
-.tab:hover{color:var(--text-2)}
+.tab{padding:8px 16px;font-size:13.5px;font-weight:500;cursor:pointer;border-bottom:2px solid transparent;color:var(--t3);transition:all .15s;margin-bottom:-1px}
 .tab.active{color:var(--brand);border-bottom-color:var(--brand)}
-.question-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:20px;margin-bottom:12px}
-.question-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:14px}
-.question-num{font-size:11px;font-weight:600;color:var(--brand);text-transform:uppercase;letter-spacing:0.5px}
-.question-type-badge{font-size:11px;padding:2px 8px;border-radius:6px;background:var(--brand-lt);color:var(--brand);font-weight:500}
-.question-text{font-size:14.5px;font-weight:500;line-height:1.5;margin-bottom:14px}
-.option-list{display:flex;flex-direction:column;gap:8px}
-.option{display:flex;align-items:center;gap:10px;padding:10px 14px;border:1px solid var(--border);border-radius:8px;cursor:pointer;transition:all 0.15s;font-size:13.5px}
-.option:hover{border-color:var(--brand);background:var(--brand-lt)}
-.option.selected{border-color:var(--brand);background:var(--brand-lt);color:var(--brand);font-weight:500}
-.option.correct{border-color:var(--success);background:#d1fae5;color:#065f46}
-.option.wrong{border-color:var(--danger);background:#fee2e2;color:#991b1b}
-.option-letter{width:24px;height:24px;border-radius:6px;background:var(--bg);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:11.5px;font-weight:600;flex-shrink:0}
-.progress-bar{background:var(--border);border-radius:4px;height:6px;overflow:hidden;margin:8px 0}
-.progress-fill{height:100%;border-radius:4px;background:var(--brand);transition:width 0.4s}
-.chat-bubble{padding:10px 14px;border-radius:12px;font-size:13.5px;line-height:1.5;max-width:80%}
-.chat-customer{background:#f1f5f9;color:var(--text);border-bottom-left-radius:3px;align-self:flex-start}
-.chat-rep{background:var(--brand);color:#fff;border-bottom-right-radius:3px;align-self:flex-end}
-.chat-messages{display:flex;flex-direction:column;gap:10px;padding:16px;min-height:220px;max-height:300px;overflow-y:auto;background:var(--bg);border-radius:8px;border:1px solid var(--border)}
-.landing{background:#fff;min-height:100vh}
+.qcard{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:20px;margin-bottom:12px}
+.qh{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:14px}
+.qnum{font-size:11px;font-weight:600;color:var(--brand);text-transform:uppercase;letter-spacing:.5px}
+.qtb{font-size:11px;padding:2px 8px;border-radius:6px;background:var(--brand-lt);color:var(--brand);font-weight:500}
+.qtext{font-size:14.5px;font-weight:500;line-height:1.5;margin-bottom:14px}
+.opts{display:flex;flex-direction:column;gap:8px}
+.opt{display:flex;align-items:center;gap:10px;padding:10px 14px;border:1px solid var(--border);border-radius:8px;cursor:pointer;transition:all .15s;font-size:13.5px}
+.opt:hover{border-color:var(--brand);background:var(--brand-lt)}
+.opt.sel{border-color:var(--brand);background:var(--brand-lt);color:var(--brand);font-weight:500}
+.opt.cor{border-color:var(--success);background:#d1fae5;color:#065f46}
+.opt.wrg{border-color:var(--danger);background:#fee2e2;color:#991b1b}
+.ol{width:24px;height:24px;border-radius:6px;background:var(--bg);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:11.5px;font-weight:600;flex-shrink:0}
+.pb{background:var(--border);border-radius:4px;height:6px;overflow:hidden;margin:8px 0}
+.pf{height:100%;border-radius:4px;background:var(--brand);transition:width .4s}
+.cb{padding:10px 14px;border-radius:12px;font-size:13.5px;line-height:1.5;max-width:85%}
+.cc{background:#f1f5f9;color:var(--text);border-bottom-left-radius:3px;align-self:flex-start}
+.cr{background:var(--brand);color:#fff;border-bottom-right-radius:3px;align-self:flex-end}
+.cm{display:flex;flex-direction:column;gap:10px;padding:16px;min-height:180px;max-height:280px;overflow-y:auto;background:var(--bg);border-radius:8px;border:1px solid var(--border)}
+.ail{display:flex;align-items:center;gap:12px;padding:16px 20px;background:var(--brand-lt);border:1px solid #bfdbfe;border-radius:var(--r);font-size:13.5px;color:#1e40af;font-weight:500}
+.ad{width:8px;height:8px;border-radius:50%;background:var(--brand);animation:pulse 1.4s ease-in-out infinite}
+.ad:nth-child(2){animation-delay:.2s}.ad:nth-child(3){animation-delay:.4s}
+@keyframes pulse{0%,80%,100%{opacity:.3;transform:scale(.8)}40%{opacity:1;transform:scale(1)}}
+.mi{display:flex;align-items:center;gap:12px;padding:12px 14px;border:1px solid var(--border);border-radius:8px;margin-bottom:8px;background:var(--surface)}
+.fi-ic{width:36px;height:36px;border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0;background:#dbeafe}
+.fi-ic i{color:#2563eb;font-size:18px}
+.mi-info{flex:1;min-width:0}
+.mi-name{font-size:13.5px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.mi-meta{font-size:12px;color:var(--t3);margin-top:1px}
+.sh{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px}
+.st{font-size:14.5px;font-weight:600}
+.sdiv{height:1px;background:var(--border);margin:16px 0}
+.notif{position:fixed;bottom:20px;right:20px;background:var(--sidebar);color:#fff;padding:12px 18px;border-radius:9px;font-size:13.5px;font-weight:500;display:flex;align-items:center;gap:8px;z-index:9999;transform:translateY(60px);opacity:0;transition:all .3s;box-shadow:0 4px 16px rgba(0,0,0,.2);max-width:360px}
+.notif.show{transform:translateY(0);opacity:1}
+.notif i{color:#4ade80;font-size:16px;flex-shrink:0}
+.lw{min-height:100vh;display:flex;align-items:center;justify-content:center;background:var(--bg)}
+.lc{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:36px;width:380px}
+.le{background:#fee2e2;color:#991b1b;font-size:13px;padding:10px 14px;border-radius:8px;margin-bottom:14px;display:none}
+.qtw{max-width:680px;margin:0 auto;padding:32px 20px}
+.qhb{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:16px 20px;margin-bottom:20px;display:flex;align-items:center;justify-content:space-between}
+.tc{display:flex;align-items:center;gap:5px;font-size:13px;font-weight:600;color:var(--t2);background:var(--bg);padding:5px 12px;border-radius:20px;border:1px solid var(--border)}
+.rh{text-align:center;padding:32px;background:var(--surface);border:1px solid var(--border);border-radius:var(--r);margin-bottom:20px}
+.ssr{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--border);font-size:13.5px}
+.ssr:last-child{border-bottom:none}
+.pnav{position:fixed;bottom:0;left:0;right:0;background:var(--surface);border-top:1px solid var(--border);padding:10px 20px;display:flex;gap:8px;justify-content:center;z-index:100}
 .hero{background:linear-gradient(135deg,#0f172a 0%,#1e3a8a 100%);padding:80px 40px;text-align:center;position:relative;overflow:hidden}
-.hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 60% 40%,rgba(59,130,246,0.15) 0%,transparent 60%)}
-.hero-content{position:relative;max-width:680px;margin:0 auto}
-.hero-badge{display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.15);padding:5px 14px;border-radius:20px;font-size:12.5px;color:#93c5fd;margin-bottom:20px}
+.hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 60% 40%,rgba(59,130,246,.15) 0%,transparent 60%)}
+.hc{position:relative;max-width:680px;margin:0 auto}
+.hbadge{display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.15);padding:5px 14px;border-radius:20px;font-size:12.5px;color:#93c5fd;margin-bottom:20px}
 .hero h1{font-size:40px;font-weight:600;color:#fff;letter-spacing:-1px;line-height:1.15;margin-bottom:16px}
 .hero h1 span{color:#60a5fa}
 .hero p{font-size:16px;color:#94a3b8;line-height:1.6;margin-bottom:32px}
-.hero-btns{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
-.hero-btn-primary{background:var(--brand);color:#fff;padding:12px 28px;border-radius:9px;font-size:15px;font-weight:500;cursor:pointer;border:none;font-family:'DM Sans',sans-serif;transition:background 0.15s}
-.hero-btn-primary:hover{background:#1648c8}
-.hero-btn-secondary{background:rgba(255,255,255,0.08);color:#fff;padding:12px 28px;border-radius:9px;font-size:15px;font-weight:500;cursor:pointer;border:1px solid rgba(255,255,255,0.15);font-family:'DM Sans',sans-serif}
-.hero-btn-secondary:hover{background:rgba(255,255,255,0.14)}
-.features{padding:60px 40px;max-width:960px;margin:0 auto}
-.features h2{font-size:24px;font-weight:600;text-align:center;margin-bottom:8px}
-.features p.sub{text-align:center;color:var(--text-2);font-size:14.5px;margin-bottom:40px}
-.feature-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
-.feature-card{background:#f8fafc;border:1px solid var(--border);border-radius:12px;padding:24px}
-.feature-icon{width:40px;height:40px;background:var(--brand-lt);border-radius:9px;display:flex;align-items:center;justify-content:center;margin-bottom:14px}
-.feature-icon i{font-size:20px;color:var(--brand)}
-.feature-card h3{font-size:14.5px;font-weight:600;margin-bottom:6px}
-.feature-card p{font-size:13px;color:var(--text-2);line-height:1.55}
-.quiz-take-wrap{max-width:700px;margin:0 auto;padding:32px 20px}
-.quiz-header-bar{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:16px 20px;margin-bottom:20px;display:flex;align-items:center;justify-content:space-between}
-.quiz-header-bar .quiz-title{font-size:15.5px;font-weight:600}
-.timer-chip{display:flex;align-items:center;gap:5px;font-size:13px;font-weight:600;color:var(--text-2);background:var(--bg);padding:5px 12px;border-radius:20px;border:1px solid var(--border)}
-.result-hero{text-align:center;padding:32px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);margin-bottom:20px}
-.result-score-ring{width:110px;height:110px;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 16px;position:relative}
-.result-score-inner{width:86px;height:86px;border-radius:50%;background:var(--surface);display:flex;align-items:center;justify-content:center;flex-direction:column;border:3px solid var(--border)}
-.result-score-inner .score-pct{font-size:22px;font-weight:700;color:var(--brand)}
-.result-score-inner .score-label{font-size:10px;color:var(--text-3)}
-.ai-loading{display:flex;align-items:center;gap:12px;padding:16px 20px;background:var(--brand-lt);border:1px solid #bfdbfe;border-radius:var(--radius);font-size:13.5px;color:#1e40af;font-weight:500;margin:12px 0}
-.ai-dot{width:8px;height:8px;border-radius:50%;background:var(--brand);animation:pulse 1.4s ease-in-out infinite}
-.ai-dot:nth-child(2){animation-delay:0.2s}
-.ai-dot:nth-child(3){animation-delay:0.4s}
-@keyframes pulse{0%,80%,100%{opacity:0.3;transform:scale(0.8)}40%{opacity:1;transform:scale(1)}}
-.material-item{display:flex;align-items:center;gap:12px;padding:12px 14px;border:1px solid var(--border);border-radius:8px;margin-bottom:8px;background:var(--surface)}
-.file-icon{width:36px;height:36px;border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
-.file-pdf{background:#fee2e2}.file-pdf i{color:#dc2626;font-size:18px}
-.file-doc{background:#dbeafe}.file-doc i{color:#2563eb;font-size:18px}
-.material-info{flex:1;min-width:0}
-.material-name{font-size:13.5px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.material-meta{font-size:12px;color:var(--text-3);margin-top:1px}
-.material-actions{display:flex;gap:6px}
-.section-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px}
-.section-title{font-size:14.5px;font-weight:600}
-.section-link{font-size:12.5px;color:var(--brand);cursor:pointer;font-weight:500}
-.section-link:hover{text-decoration:underline}
-.section-divider{height:1px;background:var(--border);margin:20px 0}
-.sim-score-row{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--border);font-size:13.5px}
-.sim-score-row:last-child{border-bottom:none}
-.sim-criterion{color:var(--text-2)}
-.sim-pts{font-weight:600;font-size:13px}
-.notif{position:fixed;bottom:20px;right:20px;background:var(--sidebar);color:#fff;padding:12px 18px;border-radius:9px;font-size:13.5px;font-weight:500;display:flex;align-items:center;gap:8px;z-index:9999;transform:translateY(60px);opacity:0;transition:all 0.3s;box-shadow:0 4px 16px rgba(0,0,0,0.2)}
-.notif.show{transform:translateY(0);opacity:1}
-.notif i{color:#4ade80;font-size:16px}
-.chart-legend{display:flex;gap:16px;flex-wrap:wrap;font-size:12px;color:var(--text-2);margin-bottom:8px}
-.legend-dot{width:10px;height:10px;border-radius:2px;display:inline-block;margin-right:4px}
-.flex-row{display:flex;align-items:center;gap:10px}
-.flex-between{display:flex;align-items:center;justify-content:space-between}
-.mt-4{margin-top:4px}.mt-8{margin-top:8px}.mt-12{margin-top:12px}.mt-16{margin-top:16px}
-.mb-8{margin-bottom:8px}.mb-12{margin-bottom:12px}.mb-16{margin-bottom:16px}
-.text-sm{font-size:12.5px;color:var(--text-2)}
-.text-muted{color:var(--text-3);font-size:12px}
-.fw-500{font-weight:500}
-.color-success{color:var(--success)}.color-danger{color:var(--danger)}.color-brand{color:var(--brand)}
-
-/* Admin login */
-.login-wrap{min-height:100vh;display:flex;align-items:center;justify-content:center;background:var(--bg)}
-.login-card{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:36px;width:380px}
-.login-card .logo{justify-content:center;margin-bottom:24px}
-.login-card h2{font-size:20px;font-weight:600;text-align:center;margin-bottom:4px}
-.login-card p{font-size:13px;color:var(--text-2);text-align:center;margin-bottom:24px}
-.login-error{background:#fee2e2;color:#991b1b;font-size:13px;padding:10px 14px;border-radius:8px;margin-bottom:14px;display:none}
-
-/* Participant fixed nav */
-.p-nav{position:fixed;bottom:0;left:0;right:0;background:var(--surface);border-top:1px solid var(--border);padding:10px 20px;display:flex;gap:8px;justify-content:center;z-index:100}
-
-@media(max-width:768px){
-  .app-shell{flex-direction:column}
-  .sidebar{width:100%;min-width:unset;flex-direction:row;overflow-x:auto;height:auto}
-  .sidebar-section{display:flex;flex-direction:row;padding:8px}
-  .sidebar-section-label{display:none}
-  .sidebar-brand{padding:12px}
-  .sidebar-footer{display:none}
-  .stats-grid{grid-template-columns:repeat(2,1fr)}
-  .two-col,.main-side{grid-template-columns:1fr}
-  .feature-grid{grid-template-columns:1fr}
-  .page{padding:16px}
-  .hero{padding:40px 20px}
-  .hero h1{font-size:26px}
-}
+.hbtns{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
+.hbp{background:var(--brand);color:#fff;padding:12px 28px;border-radius:9px;font-size:15px;font-weight:500;cursor:pointer;border:none;font-family:'DM Sans',sans-serif}
+.hbp:hover{background:#1648c8}
+.hbs{background:rgba(255,255,255,.08);color:#fff;padding:12px 28px;border-radius:9px;font-size:15px;font-weight:500;cursor:pointer;border:1px solid rgba(255,255,255,.15);font-family:'DM Sans',sans-serif}
+.feats{padding:60px 40px;max-width:960px;margin:0 auto}
+.feats h2{font-size:24px;font-weight:600;text-align:center;margin-bottom:8px}
+.feats .sub{text-align:center;color:var(--t2);font-size:14.5px;margin-bottom:40px}
+.fg3{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+.fc{background:#f8fafc;border:1px solid var(--border);border-radius:12px;padding:24px}
+.fic{width:40px;height:40px;background:var(--brand-lt);border-radius:9px;display:flex;align-items:center;justify-content:center;margin-bottom:14px}
+.fic i{font-size:20px;color:var(--brand)}
+.fc h3{font-size:14.5px;font-weight:600;margin-bottom:6px}
+.fc p{font-size:13px;color:var(--t2);line-height:1.55}
+.es{text-align:center;padding:36px 24px;color:var(--t3)}
+.es i{font-size:36px;margin-bottom:12px;display:block}
+.es p{font-size:14px}
+.fr{display:flex;align-items:center;gap:10px}
+.fb{display:flex;align-items:center;justify-content:space-between}
+.mt4{margin-top:4px}.mt8{margin-top:8px}.mt12{margin-top:12px}.mt16{margin-top:16px}
+.mb8{margin-bottom:8px}.mb12{margin-bottom:12px}.mb16{margin-bottom:16px}
+.tsm{font-size:12.5px;color:var(--t2)}.tm{color:var(--t3);font-size:12px}
+.fw5{font-weight:500}.cs{color:var(--success)}.cd{color:var(--danger)}.cb2{color:var(--brand)}
+@media(max-width:768px){.sg{grid-template-columns:repeat(2,1fr)}.g2,.ms{grid-template-columns:1fr}.fg3{grid-template-columns:1fr}.page{padding:16px}.hero{padding:40px 20px}.hero h1{font-size:26px}.sidebar{display:none}}
 </style>
 </head>
 <body>
-
 <div id="app">
+<div class="notif" id="notif"><i class="ti ti-circle-check"></i><span id="notif-msg"></span></div>
 
-  <!-- NOTIFICATION -->
-  <div class="notif" id="notif"><i class="ti ti-circle-check"></i> <span id="notif-msg">Done!</span></div>
-
-  <!-- ═══════════════════════════════════════
-       LANDING PAGE
-  ═══════════════════════════════════════ -->
-  <div id="page-landing" class="landing">
-    <div class="hero">
-      <div class="hero-content">
-        <div class="hero-badge"><i class="ti ti-sparkles"></i> AI-Powered Training Platform</div>
-        <h1>Train smarter.<br><span>Score faster.</span></h1>
-        <p>Upload your SOPs and training docs — TrainIQ automatically generates quizzes, assessments, and realistic customer simulations for your team.</p>
-        <div class="hero-btns">
-          <button class="hero-btn-primary" onclick="showLogin()">Admin Dashboard</button>
-          <button class="hero-btn-secondary" onclick="showParticipant()">Take a Quiz</button>
-        </div>
-      </div>
-    </div>
-    <div class="features">
-      <h2>Everything your training program needs</h2>
-      <p class="sub">From upload to assessment in minutes, powered by Claude AI.</p>
-      <div class="feature-grid">
-        <div class="feature-card"><div class="feature-icon"><i class="ti ti-file-text"></i></div><h3>Smart PDF Upload</h3><p>Upload PDFs, SOPs, and training guides. AI extracts content and prepares it for quiz generation.</p></div>
-        <div class="feature-card"><div class="feature-icon"><i class="ti ti-brain"></i></div><h3>AI Quiz Generation</h3><p>Multiple choice, true/false, scenario, and simulation questions generated automatically.</p></div>
-        <div class="feature-card"><div class="feature-icon"><i class="ti ti-message-chatbot"></i></div><h3>Customer Simulations</h3><p>Realistic customer conversations with AI-powered scoring on accuracy, tone, and policy adherence.</p></div>
-        <div class="feature-card"><div class="feature-icon"><i class="ti ti-chart-bar"></i></div><h3>Analytics Dashboard</h3><p>Track scores, identify knowledge gaps, and monitor team performance over time.</p></div>
-        <div class="feature-card"><div class="feature-icon"><i class="ti ti-link"></i></div><h3>Shareable Links</h3><p>Participants just click a link and enter their name — no accounts needed.</p></div>
-        <div class="feature-card"><div class="feature-icon"><i class="ti ti-download"></i></div><h3>Export Reports</h3><p>Download results as CSV or Excel. Full audit trail for compliance and coaching.</p></div>
+<!-- LANDING -->
+<div id="page-landing">
+  <div class="hero">
+    <div class="hc">
+      <div class="hbadge"><i class="ti ti-sparkles"></i> AI-Powered Training Platform</div>
+      <h1>Train smarter.<br><span>Score faster.</span></h1>
+      <p>Paste your SOPs and training content — TrainIQ automatically generates quizzes and assessments for your team using AI.</p>
+      <div class="hbtns">
+        <button class="hbp" onclick="showLogin()">Admin Dashboard</button>
+        <button class="hbs" onclick="showParticipant()">Take a Quiz</button>
       </div>
     </div>
   </div>
-
-  <!-- ═══════════════════════════════════════
-       ADMIN LOGIN
-  ═══════════════════════════════════════ -->
-  <div id="page-login" style="display:none;" class="login-wrap">
-    <div class="login-card">
-      <div class="logo" style="display:flex;justify-content:center;margin-bottom:24px;">
-        <div class="logo-icon"><i class="ti ti-bolt"></i></div>
-        <span class="logo-text" style="margin-left:9px;">Train<span>IQ</span></span>
-      </div>
-      <h2>Admin Login</h2>
-      <p>Sign in to manage your training platform</p>
-      <div id="login-error" class="login-error">Incorrect password. Try <strong>admin123</strong></div>
-      <div class="form-group">
-        <label class="form-label">Password</label>
-        <input type="password" class="form-input" id="admin-pw" placeholder="Enter admin password" onkeydown="if(event.key==='Enter')doLogin()">
-      </div>
-      <button class="btn btn-primary" style="width:100%;justify-content:center;" onclick="doLogin()"><i class="ti ti-login"></i> Sign In</button>
-      <p style="font-size:12px;color:var(--text-3);text-align:center;margin-top:14px;">Demo password: <strong>admin123</strong></p>
-      <button class="btn btn-ghost btn-sm" style="width:100%;justify-content:center;margin-top:8px;" onclick="showLanding()"><i class="ti ti-arrow-left"></i> Back to home</button>
+  <div class="feats">
+    <h2>Everything your training program needs</h2>
+    <p class="sub">Paste your content, generate quizzes in seconds, track your team.</p>
+    <div class="fg3">
+      <div class="fc"><div class="fic"><i class="ti ti-clipboard-text"></i></div><h3>Paste Any Content</h3><p>Paste SOPs, policies, and guides directly — no file uploads or extra accounts needed.</p></div>
+      <div class="fc"><div class="fic"><i class="ti ti-brain"></i></div><h3>AI Quiz Generation</h3><p>One click and Claude AI generates multiple choice, true/false, and scenario questions instantly.</p></div>
+      <div class="fc"><div class="fic"><i class="ti ti-message-chatbot"></i></div><h3>Customer Simulations</h3><p>Practice real customer conversations scored on empathy, accuracy, and professionalism.</p></div>
+      <div class="fc"><div class="fic"><i class="ti ti-chart-bar"></i></div><h3>Analytics Dashboard</h3><p>Track scores, spot knowledge gaps, and monitor team performance over time.</p></div>
+      <div class="fc"><div class="fic"><i class="ti ti-link"></i></div><h3>Shareable Links</h3><p>Participants click a link and enter their name — no passwords or accounts needed.</p></div>
+      <div class="fc"><div class="fic"><i class="ti ti-download"></i></div><h3>Export Reports</h3><p>Download all results as CSV for compliance, coaching, and record-keeping.</p></div>
     </div>
   </div>
+</div>
 
-  <!-- ═══════════════════════════════════════
-       ADMIN SHELL
-  ═══════════════════════════════════════ -->
-  <div id="admin-shell" class="app-shell" style="display:none;">
-    <nav class="sidebar">
-      <div class="sidebar-brand">
-        <div class="logo">
-          <div class="logo-icon"><i class="ti ti-bolt"></i></div>
-          <span class="logo-text">Train<span>IQ</span></span>
-        </div>
-      </div>
-      <div class="sidebar-section">
-        <div class="sidebar-section-label">Overview</div>
-        <div class="sidebar-item active" onclick="adminNav('dashboard',this)"><i class="ti ti-layout-dashboard"></i> Dashboard</div>
-        <div class="sidebar-item" onclick="adminNav('analytics',this)"><i class="ti ti-chart-line"></i> Analytics</div>
-      </div>
-      <div class="sidebar-section">
-        <div class="sidebar-section-label">Content</div>
-        <div class="sidebar-item" onclick="adminNav('materials',this)"><i class="ti ti-files"></i> Materials</div>
-        <div class="sidebar-item" onclick="adminNav('quizzes',this)"><i class="ti ti-clipboard-list"></i> Quizzes <span class="badge">8</span></div>
-        <div class="sidebar-item" onclick="adminNav('generate',this)"><i class="ti ti-sparkles"></i> AI Generate</div>
-      </div>
-      <div class="sidebar-section">
-        <div class="sidebar-section-label">Results</div>
-        <div class="sidebar-item" onclick="adminNav('results',this)"><i class="ti ti-table"></i> All Results</div>
-        <div class="sidebar-item" onclick="adminNav('employees',this)"><i class="ti ti-users"></i> Employees</div>
-        <div class="sidebar-item" onclick="adminNav('export',this)"><i class="ti ti-download"></i> Export</div>
-      </div>
-      <div class="sidebar-section">
-        <div class="sidebar-section-label">Settings</div>
-        <div class="sidebar-item" onclick="adminNav('settings',this)"><i class="ti ti-settings"></i> Settings</div>
-      </div>
-      <div class="sidebar-footer">
-        <div class="sidebar-user">
-          <div class="avatar">AD</div>
-          <div class="user-info"><div class="name">Admin User</div><div class="role">Administrator</div></div>
-        </div>
-        <div class="sidebar-item mt-4" onclick="showLanding()" style="color:rgba(255,255,255,0.4);font-size:12.5px;"><i class="ti ti-logout"></i> Sign out</div>
-      </div>
-    </nav>
-
-    <div class="main">
-
-      <!-- DASHBOARD -->
-      <div id="admin-dashboard" class="page active">
-        <div class="topbar">
-          <div class="topbar-left"><h1>Dashboard</h1><p>Welcome back — here's what's happening.</p></div>
-          <div class="topbar-right">
-            <button class="btn btn-secondary btn-sm" onclick="adminNav('generate',document.querySelectorAll('.sidebar-item')[4])"><i class="ti ti-sparkles"></i> Generate Quiz</button>
-            <button class="btn btn-primary btn-sm" onclick="adminNav('materials',document.querySelectorAll('.sidebar-item')[2])"><i class="ti ti-upload"></i> Upload Doc</button>
-          </div>
-        </div>
-        <div class="stats-grid">
-          <div class="stat-card"><div class="label"><i class="ti ti-clipboard-check"></i> Quizzes Completed</div><div class="value">1,247</div><div class="change up"><i class="ti ti-trending-up"></i> +12% this week</div></div>
-          <div class="stat-card"><div class="label"><i class="ti ti-chart-bar"></i> Average Score</div><div class="value">82.4%</div><div class="change up"><i class="ti ti-trending-up"></i> +3.1% vs last month</div></div>
-          <div class="stat-card"><div class="label"><i class="ti ti-users"></i> Active Learners</div><div class="value">94</div><div class="change down"><i class="ti ti-trending-down"></i> -2 this week</div></div>
-          <div class="stat-card"><div class="label"><i class="ti ti-files"></i> Training Docs</div><div class="value">23</div><div class="change up"><i class="ti ti-trending-up"></i> 3 added this month</div></div>
-        </div>
-        <div class="main-side">
-          <div>
-            <div class="card mb-16">
-              <div class="section-header mb-8"><span class="section-title">Score trend — last 30 days</span><span class="section-link" onclick="adminNav('analytics',document.querySelectorAll('.sidebar-item')[1])">Full analytics →</span></div>
-              <div class="chart-legend"><span><span class="legend-dot" style="background:#1a56db;"></span>Avg Score</span><span><span class="legend-dot" style="background:#10b981;"></span>Pass Rate</span></div>
-              <div style="position:relative;height:200px;"><canvas id="scoreChart" role="img" aria-label="Score trend over 30 days">Average scores ranging from 74 to 86 percent.</canvas></div>
-            </div>
-            <div class="card">
-              <div class="section-header"><span class="section-title">Recent activity</span><span class="section-link" onclick="adminNav('results',document.querySelectorAll('.sidebar-item')[5])">View all</span></div>
-              <div class="table-wrap"><table>
-                <thead><tr><th>Name</th><th>Quiz</th><th>Score</th><th>Time</th><th>Status</th></tr></thead>
-                <tbody>
-                  <tr><td class="fw-500">Sarah Chen</td><td>Refund Policy v2</td><td><span class="color-success fw-500">94%</span></td><td class="text-muted">8m ago</td><td><span class="badge-status badge-success">Passed</span></td></tr>
-                  <tr><td class="fw-500">Marcus Hill</td><td>Escalation SOP</td><td><span style="color:var(--warning);font-weight:500;">68%</span></td><td class="text-muted">22m ago</td><td><span class="badge-status badge-warning">Review</span></td></tr>
-                  <tr><td class="fw-500">Priya Nair</td><td>Product Knowledge</td><td><span class="color-success fw-500">88%</span></td><td class="text-muted">1h ago</td><td><span class="badge-status badge-success">Passed</span></td></tr>
-                  <tr><td class="fw-500">Jordan Lee</td><td>Customer Simulation</td><td><span class="color-danger fw-500">51%</span></td><td class="text-muted">2h ago</td><td><span class="badge-status badge-danger">Failed</span></td></tr>
-                  <tr><td class="fw-500">Ava Torres</td><td>Refund Policy v2</td><td><span class="color-success fw-500">91%</span></td><td class="text-muted">3h ago</td><td><span class="badge-status badge-success">Passed</span></td></tr>
-                </tbody>
-              </table></div>
-            </div>
-          </div>
-          <div>
-            <div class="card mb-16">
-              <div class="section-title mb-12">Most missed questions</div>
-              <div style="font-size:13px;color:var(--text-2);margin-bottom:10px;line-height:1.5;">Which step comes first when a customer requests a refund?</div>
-              <div class="score-bar mb-8"><div class="score-fill fill-red" style="width:63%;"></div></div>
-              <div class="text-sm mb-12">63% answered incorrectly</div>
-              <div style="font-size:13px;color:var(--text-2);margin-bottom:10px;line-height:1.5;">Max days for standard return window?</div>
-              <div class="score-bar mb-8"><div class="score-fill fill-amber" style="width:41%;"></div></div>
-              <div class="text-sm mb-12">41% answered incorrectly</div>
-              <div style="font-size:13px;color:var(--text-2);margin-bottom:10px;line-height:1.5;">When to escalate to tier-2 support?</div>
-              <div class="score-bar mb-8"><div class="score-fill fill-amber" style="width:35%;"></div></div>
-              <div class="text-sm">35% answered incorrectly</div>
-            </div>
-            <div class="card">
-              <div class="section-title mb-12">Team leaderboard</div>
-              <div style="display:flex;flex-direction:column;gap:9px;">
-                <div class="flex-row" style="font-size:13.5px;"><span style="font-size:11px;color:var(--text-3);width:16px;">1</span><div class="avatar" style="width:28px;height:28px;font-size:10px;background:#7c3aed;">SC</div><span style="flex:1;font-weight:500;">Sarah Chen</span><span class="color-success fw-500">97%</span></div>
-                <div class="flex-row" style="font-size:13.5px;"><span style="font-size:11px;color:var(--text-3);width:16px;">2</span><div class="avatar" style="width:28px;height:28px;font-size:10px;background:#0891b2;">AT</div><span style="flex:1;font-weight:500;">Ava Torres</span><span class="color-success fw-500">93%</span></div>
-                <div class="flex-row" style="font-size:13.5px;"><span style="font-size:11px;color:var(--text-3);width:16px;">3</span><div class="avatar" style="width:28px;height:28px;font-size:10px;background:#0369a1;">PN</div><span style="flex:1;font-weight:500;">Priya Nair</span><span class="color-success fw-500">89%</span></div>
-                <div class="flex-row" style="font-size:13.5px;"><span style="font-size:11px;color:var(--text-3);width:16px;">4</span><div class="avatar" style="width:28px;height:28px;font-size:10px;background:#b45309;">MH</div><span style="flex:1;font-weight:500;">Marcus Hill</span><span style="color:var(--warning);font-weight:500;">72%</span></div>
-                <div class="flex-row" style="font-size:13.5px;"><span style="font-size:11px;color:var(--text-3);width:16px;">5</span><div class="avatar" style="width:28px;height:28px;font-size:10px;background:#dc2626;">JL</div><span style="flex:1;font-weight:500;">Jordan Lee</span><span class="color-danger fw-500">58%</span></div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- MATERIALS -->
-      <div id="admin-materials" class="page">
-        <div class="topbar"><div class="topbar-left"><h1>Training Materials</h1><p>Upload and manage your training documents.</p></div><div class="topbar-right"><button class="btn btn-primary btn-sm" onclick="triggerUpload()"><i class="ti ti-upload"></i> Upload Document</button></div></div>
-        <div class="two-col">
-          <div>
-            <div class="card mb-16">
-              <div class="upload-zone" onclick="triggerUpload()">
-                <i class="ti ti-cloud-upload"></i>
-                <div class="upload-title">Drop files here or click to upload</div>
-                <div class="upload-sub">Supports PDF, DOCX, TXT — up to 50MB each</div>
-              </div>
-              <input type="file" id="file-input" accept=".pdf,.docx,.txt" style="display:none;" onchange="handleFileSelect(this)">
-            </div>
-            <div class="card">
-              <div class="section-header"><span class="section-title">Documents</span><span class="text-muted" id="doc-count">3 files</span></div>
-              <div id="materials-list">
-                <div class="material-item"><div class="file-icon file-pdf"><i class="ti ti-file-type-pdf"></i></div><div class="material-info"><div class="material-name">Refund & Return Policy v2.pdf</div><div class="material-meta">Uploaded 2 days ago · 1.2 MB · 3 quizzes generated</div></div><div class="material-actions"><button class="btn btn-secondary btn-sm" onclick="showNotif('Navigate to AI Generate to create a quiz from this document.')"><i class="ti ti-sparkles"></i></button><button class="btn btn-ghost btn-sm" onclick="removeDoc(this)"><i class="ti ti-trash"></i></button></div></div>
-                <div class="material-item"><div class="file-icon file-pdf"><i class="ti ti-file-type-pdf"></i></div><div class="material-info"><div class="material-name">Escalation Procedures SOP.pdf</div><div class="material-meta">Uploaded 1 week ago · 840 KB · 2 quizzes generated</div></div><div class="material-actions"><button class="btn btn-secondary btn-sm" onclick="showNotif('Navigate to AI Generate to create a quiz.')"><i class="ti ti-sparkles"></i></button><button class="btn btn-ghost btn-sm" onclick="removeDoc(this)"><i class="ti ti-trash"></i></button></div></div>
-                <div class="material-item"><div class="file-icon file-doc"><i class="ti ti-file-text"></i></div><div class="material-info"><div class="material-name">Product Knowledge Base.docx</div><div class="material-meta">Uploaded 2 weeks ago · 2.1 MB · 1 quiz generated</div></div><div class="material-actions"><button class="btn btn-secondary btn-sm" onclick="showNotif('Navigate to AI Generate to create a quiz.')"><i class="ti ti-sparkles"></i></button><button class="btn btn-ghost btn-sm" onclick="removeDoc(this)"><i class="ti ti-trash"></i></button></div></div>
-              </div>
-            </div>
-          </div>
-          <div>
-            <div class="card mb-16"><div class="section-title mb-12">Storage usage</div><div class="progress-bar mb-8"><div class="progress-fill" style="width:38%;"></div></div><div class="text-sm">4.7 GB used of 12 GB</div></div>
-            <div class="card">
-              <div class="section-title mb-12">Categories</div>
-              <div style="display:flex;flex-direction:column;gap:8px;">
-                <div class="flex-between" style="font-size:13.5px;"><span>Policies & Procedures</span><span class="badge-status badge-info">5 docs</span></div>
-                <div class="flex-between" style="font-size:13.5px;"><span>Product Knowledge</span><span class="badge-status badge-info">3 docs</span></div>
-                <div class="flex-between" style="font-size:13.5px;"><span>Soft Skills</span><span class="badge-status badge-gray">2 docs</span></div>
-                <div class="flex-between" style="font-size:13.5px;"><span>Compliance</span><span class="badge-status badge-gray">1 doc</span></div>
-              </div>
-              <div class="section-divider"></div>
-              <button class="btn btn-secondary btn-sm" style="width:100%;justify-content:center;" onclick="showNotif('Category added.')"><i class="ti ti-plus"></i> Add Category</button>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- AI GENERATE -->
-      <div id="admin-generate" class="page">
-        <div class="topbar"><div class="topbar-left"><h1>AI Quiz Generator</h1><p>Generate quizzes from your uploaded materials.</p></div></div>
-        <div class="main-side">
-          <div>
-            <div class="card mb-16">
-              <div class="section-title mb-16">Configure generation</div>
-              <div class="form-group"><label class="form-label">Source document</label><select class="form-select"><option>Refund & Return Policy v2.pdf</option><option>Escalation Procedures SOP.pdf</option><option>Product Knowledge Base.docx</option></select></div>
-              <div class="form-group"><label class="form-label">Quiz title</label><input type="text" class="form-input" value="Refund Policy Assessment"></div>
-              <div class="two-col" style="gap:12px;">
-                <div class="form-group"><label class="form-label">Number of questions</label><select class="form-select"><option>5</option><option selected>10</option><option>15</option><option>20</option></select></div>
-                <div class="form-group"><label class="form-label">Difficulty</label><select class="form-select"><option>Mixed</option><option>Easy</option><option>Medium</option><option>Hard</option></select></div>
-              </div>
-              <div class="form-group">
-                <label class="form-label">Question types</label>
-                <div style="display:flex;gap:12px;flex-wrap:wrap;margin-top:4px;">
-                  <label style="display:flex;align-items:center;gap:5px;font-size:13px;cursor:pointer;"><input type="checkbox" checked> Multiple choice</label>
-                  <label style="display:flex;align-items:center;gap:5px;font-size:13px;cursor:pointer;"><input type="checkbox" checked> True / False</label>
-                  <label style="display:flex;align-items:center;gap:5px;font-size:13px;cursor:pointer;"><input type="checkbox"> Scenario</label>
-                  <label style="display:flex;align-items:center;gap:5px;font-size:13px;cursor:pointer;"><input type="checkbox"> Simulation</label>
-                </div>
-              </div>
-              <button class="btn btn-primary" onclick="runAIGeneration()" style="width:100%;justify-content:center;"><i class="ti ti-sparkles"></i> Generate with AI</button>
-            </div>
-            <div id="gen-result" style="display:none;">
-              <div id="ai-loading" class="ai-loading mb-16"><div class="ai-dot"></div><div class="ai-dot"></div><div class="ai-dot"></div> Processing document with Claude AI...</div>
-              <div id="gen-questions" style="display:none;">
-                <div class="section-header mb-12"><span class="section-title">Generated questions — edit before publishing</span><button class="btn btn-ghost btn-sm" onclick="runAIGeneration()"><i class="ti ti-refresh"></i> Regenerate</button></div>
-                <div class="question-card"><div class="question-header"><span class="question-num">Question 1</span><span class="question-type-badge">Multiple choice</span></div><div class="question-text" contenteditable="true">What is the maximum number of days a customer has to initiate a standard return?</div><div class="option-list"><div class="option"><div class="option-letter">A</div><span contenteditable="true">14 days</span></div><div class="option"><div class="option-letter">B</div><span contenteditable="true">30 days</span></div><div class="option correct"><div class="option-letter">C</div><span contenteditable="true">30 days with receipt, 14 without ✓</span></div><div class="option"><div class="option-letter">D</div><span contenteditable="true">60 days</span></div></div></div>
-                <div class="question-card"><div class="question-header"><span class="question-num">Question 2</span><span class="question-type-badge">True / False</span></div><div class="question-text" contenteditable="true">Customers can receive a full cash refund for items purchased with a gift card.</div><div class="option-list"><div class="option"><div class="option-letter">T</div><span>True</span></div><div class="option correct"><div class="option-letter">F</div><span>False — store credit only ✓</span></div></div></div>
-                <div style="display:flex;gap:10px;margin-top:16px;">
-                  <button class="btn btn-primary" onclick="showNotif('Quiz published! Share link: trainiq.github.io/quiz/refund-v2')" style="flex:1;justify-content:center;"><i class="ti ti-circle-check"></i> Publish Quiz</button>
-                  <button class="btn btn-secondary" onclick="showNotif('Quiz saved as draft.')"><i class="ti ti-device-floppy"></i> Save Draft</button>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div>
-            <div class="card mb-16">
-              <div class="section-title mb-12">AI capabilities</div>
-              <div style="display:flex;flex-direction:column;gap:10px;">
-                <div class="flex-row" style="font-size:13px;"><i class="ti ti-check" style="color:var(--success);font-size:15px;"></i> Text extraction from PDF</div>
-                <div class="flex-row" style="font-size:13px;"><i class="ti ti-check" style="color:var(--success);font-size:15px;"></i> Multiple question types</div>
-                <div class="flex-row" style="font-size:13px;"><i class="ti ti-check" style="color:var(--success);font-size:15px;"></i> Distractor generation</div>
-                <div class="flex-row" style="font-size:13px;"><i class="ti ti-check" style="color:var(--success);font-size:15px;"></i> Answer key creation</div>
-                <div class="flex-row" style="font-size:13px;"><i class="ti ti-check" style="color:var(--success);font-size:15px;"></i> Scenario simulation builder</div>
-                <div class="flex-row" style="font-size:13px;"><i class="ti ti-check" style="color:var(--success);font-size:15px;"></i> Difficulty calibration</div>
-              </div>
-            </div>
-            <div class="card">
-              <div class="section-title mb-12">Recent generations</div>
-              <div style="display:flex;flex-direction:column;gap:10px;font-size:13px;">
-                <div><div class="fw-500">Escalation Quiz — 10 Qs</div><div class="text-muted mt-4">Generated 2h ago</div></div>
-                <div><div class="fw-500">Product Knowledge — 15 Qs</div><div class="text-muted mt-4">Generated yesterday</div></div>
-                <div><div class="fw-500">Refund SOP — 8 Qs</div><div class="text-muted mt-4">Generated 3 days ago</div></div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- QUIZZES -->
-      <div id="admin-quizzes" class="page">
-        <div class="topbar"><div class="topbar-left"><h1>Quizzes</h1><p>Manage and share your assessments.</p></div><div class="topbar-right"><button class="btn btn-primary btn-sm" onclick="showNotif('Quiz builder coming soon.')"><i class="ti ti-plus"></i> New Quiz</button></div></div>
-        <div class="card"><table>
-          <thead><tr><th>Quiz Name</th><th>Type</th><th>Questions</th><th>Completions</th><th>Avg Score</th><th>Status</th><th>Actions</th></tr></thead>
-          <tbody>
-            <tr><td class="fw-500">Refund Policy v2</td><td><span class="badge-status badge-info">Knowledge Check</span></td><td>10</td><td>142</td><td><span class="color-success fw-500">86%</span></td><td><span class="badge-status badge-success">Live</span></td><td><div class="flex-row" style="gap:6px;"><button class="btn btn-ghost btn-sm" onclick="showNotif('Link copied!')"><i class="ti ti-link"></i></button><button class="btn btn-ghost btn-sm" onclick="showNotif('Edit mode coming soon.')"><i class="ti ti-edit"></i></button></div></td></tr>
-            <tr><td class="fw-500">Escalation SOP</td><td><span class="badge-status badge-info">Knowledge Check</span></td><td>8</td><td>98</td><td><span style="color:var(--warning);font-weight:500;">71%</span></td><td><span class="badge-status badge-success">Live</span></td><td><div class="flex-row" style="gap:6px;"><button class="btn btn-ghost btn-sm" onclick="showNotif('Link copied!')"><i class="ti ti-link"></i></button><button class="btn btn-ghost btn-sm"><i class="ti ti-edit"></i></button></div></td></tr>
-            <tr><td class="fw-500">Customer Simulation #1</td><td><span class="badge-status badge-warning">Simulation</span></td><td>5 scenarios</td><td>64</td><td><span style="color:var(--warning);font-weight:500;">74%</span></td><td><span class="badge-status badge-success">Live</span></td><td><div class="flex-row" style="gap:6px;"><button class="btn btn-ghost btn-sm" onclick="showNotif('Link copied!')"><i class="ti ti-link"></i></button><button class="btn btn-ghost btn-sm"><i class="ti ti-edit"></i></button></div></td></tr>
-            <tr><td class="fw-500">Product Knowledge Draft</td><td><span class="badge-status badge-info">Knowledge Check</span></td><td>15</td><td>—</td><td>—</td><td><span class="badge-status badge-gray">Draft</span></td><td><div class="flex-row" style="gap:6px;"><button class="btn btn-ghost btn-sm"><i class="ti ti-link"></i></button><button class="btn btn-ghost btn-sm"><i class="ti ti-edit"></i></button></div></td></tr>
-          </tbody>
-        </table></div>
-      </div>
-
-      <!-- RESULTS -->
-      <div id="admin-results" class="page">
-        <div class="topbar"><div class="topbar-left"><h1>All Results</h1><p>Search and review every assessment submission.</p></div><div class="topbar-right"><input type="text" class="form-input" placeholder="Search by name or quiz..." style="width:220px;" oninput="filterResults(this.value)"><button class="btn btn-secondary btn-sm" onclick="exportCSV()"><i class="ti ti-download"></i> Export CSV</button></div></div>
-        <div class="card">
-          <div class="tabs"><div class="tab active" onclick="filterTab(this,'all')">All</div><div class="tab" onclick="filterTab(this,'passed')">Passed</div><div class="tab" onclick="filterTab(this,'failed')">Failed</div><div class="tab" onclick="filterTab(this,'simulation')">Simulations</div></div>
-          <div class="table-wrap"><table>
-            <thead><tr><th>Participant</th><th>Quiz</th><th>Score</th><th>Duration</th><th>Date</th><th>Status</th></tr></thead>
-            <tbody id="results-tbody">
-              <tr data-status="passed"><td class="fw-500">Sarah Chen</td><td>Refund Policy v2</td><td><span class="color-success fw-500">94%</span></td><td class="text-muted">7m 32s</td><td class="text-muted">Jun 1, 2026</td><td><span class="badge-status badge-success">Passed</span></td></tr>
-              <tr data-status="failed"><td class="fw-500">Marcus Hill</td><td>Escalation SOP</td><td><span style="color:var(--warning);font-weight:500;">68%</span></td><td class="text-muted">11m 5s</td><td class="text-muted">Jun 1, 2026</td><td><span class="badge-status badge-warning">Review</span></td></tr>
-              <tr data-status="passed"><td class="fw-500">Priya Nair</td><td>Product Knowledge</td><td><span class="color-success fw-500">88%</span></td><td class="text-muted">14m 22s</td><td class="text-muted">Jun 1, 2026</td><td><span class="badge-status badge-success">Passed</span></td></tr>
-              <tr data-status="simulation"><td class="fw-500">Jordan Lee</td><td>Customer Simulation</td><td><span class="color-danger fw-500">51%</span></td><td class="text-muted">18m 44s</td><td class="text-muted">Jun 1, 2026</td><td><span class="badge-status badge-danger">Failed</span></td></tr>
-              <tr data-status="passed"><td class="fw-500">Ava Torres</td><td>Refund Policy v2</td><td><span class="color-success fw-500">91%</span></td><td class="text-muted">9m 10s</td><td class="text-muted">May 31, 2026</td><td><span class="badge-status badge-success">Passed</span></td></tr>
-              <tr data-status="passed"><td class="fw-500">Devon Walsh</td><td>Escalation SOP</td><td><span class="color-success fw-500">82%</span></td><td class="text-muted">10m 3s</td><td class="text-muted">May 31, 2026</td><td><span class="badge-status badge-success">Passed</span></td></tr>
-            </tbody>
-          </table></div>
-        </div>
-      </div>
-
-      <!-- ANALYTICS -->
-      <div id="admin-analytics" class="page">
-        <div class="topbar"><div class="topbar-left"><h1>Analytics</h1><p>Performance trends and insights.</p></div></div>
-        <div class="stats-grid">
-          <div class="stat-card"><div class="label">Pass rate</div><div class="value">78%</div><div class="change up">↑ 4% this month</div></div>
-          <div class="stat-card"><div class="label">Avg time on quiz</div><div class="value">11m</div><div class="change up">↓ 2m faster</div></div>
-          <div class="stat-card"><div class="label">Retake rate</div><div class="value">22%</div><div class="change down">↑ 3%</div></div>
-          <div class="stat-card"><div class="label">Top scorer</div><div class="value" style="font-size:17px;">Sarah C.</div><div class="change up">97% avg</div></div>
-        </div>
-        <div class="two-col mb-16">
-          <div class="card"><div class="section-title mb-12">Score distribution</div><div style="position:relative;height:200px;"><canvas id="distChart" role="img" aria-label="Score distribution">Score distribution across buckets.</canvas></div></div>
-          <div class="card"><div class="section-title mb-12">Avg score by question type</div><div style="position:relative;height:200px;"><canvas id="typeChart" role="img" aria-label="Score by question type">Scores by type.</canvas></div></div>
-        </div>
-        <div class="card">
-          <div class="section-title mb-12">Employees needing coaching</div>
-          <table><thead><tr><th>Employee</th><th>Avg Score</th><th>Quizzes</th><th>Weakest Area</th><th>Action</th></tr></thead>
-          <tbody>
-            <tr><td class="fw-500">Jordan Lee</td><td><span class="color-danger fw-500">54%</span></td><td>3</td><td>Escalation procedures</td><td><button class="btn btn-danger btn-sm" onclick="showNotif('Coaching session scheduled for Jordan Lee.')">Schedule Coaching</button></td></tr>
-            <tr><td class="fw-500">Marcus Hill</td><td><span style="color:var(--warning);font-weight:500;">68%</span></td><td>5</td><td>Refund policy</td><td><button class="btn btn-danger btn-sm" onclick="showNotif('Coaching session scheduled for Marcus Hill.')">Schedule Coaching</button></td></tr>
-          </tbody></table>
-        </div>
-      </div>
-
-      <!-- EMPLOYEES -->
-      <div id="admin-employees" class="page">
-        <div class="topbar"><div class="topbar-left"><h1>Employees</h1><p>Track individual performance profiles.</p></div></div>
-        <div class="card"><table>
-          <thead><tr><th>Name</th><th>Quizzes</th><th>Avg Score</th><th>Last Active</th><th>Trend</th><th>Status</th></tr></thead>
-          <tbody>
-            <tr><td><div class="flex-row"><div class="avatar" style="width:28px;height:28px;font-size:10px;background:#7c3aed;">SC</div><span class="fw-500">Sarah Chen</span></div></td><td>12</td><td><span class="color-success fw-500">97%</span></td><td class="text-muted">Today</td><td class="color-success">↑ Improving</td><td><span class="badge-status badge-success">Top performer</span></td></tr>
-            <tr><td><div class="flex-row"><div class="avatar" style="width:28px;height:28px;font-size:10px;background:#0891b2;">AT</div><span class="fw-500">Ava Torres</span></div></td><td>9</td><td><span class="color-success fw-500">93%</span></td><td class="text-muted">Yesterday</td><td class="color-success">↑ Stable</td><td><span class="badge-status badge-success">Top performer</span></td></tr>
-            <tr><td><div class="flex-row"><div class="avatar" style="width:28px;height:28px;font-size:10px;background:#0369a1;">PN</div><span class="fw-500">Priya Nair</span></div></td><td>8</td><td><span class="color-success fw-500">89%</span></td><td class="text-muted">Today</td><td class="color-success">↑ Improving</td><td><span class="badge-status badge-info">On track</span></td></tr>
-            <tr><td><div class="flex-row"><div class="avatar" style="width:28px;height:28px;font-size:10px;background:#b45309;">MH</div><span class="fw-500">Marcus Hill</span></div></td><td>5</td><td><span style="color:var(--warning);font-weight:500;">68%</span></td><td class="text-muted">Today</td><td style="color:var(--warning);">→ Plateau</td><td><span class="badge-status badge-warning">Needs review</span></td></tr>
-            <tr><td><div class="flex-row"><div class="avatar" style="width:28px;height:28px;font-size:10px;background:#dc2626;">JL</div><span class="fw-500">Jordan Lee</span></div></td><td>3</td><td><span class="color-danger fw-500">54%</span></td><td class="text-muted">Today</td><td class="color-danger">↓ Declining</td><td><span class="badge-status badge-danger">Coaching needed</span></td></tr>
-          </tbody>
-        </table></div>
-      </div>
-
-      <!-- EXPORT -->
-      <div id="admin-export" class="page">
-        <div class="topbar"><div class="topbar-left"><h1>Export Reports</h1><p>Download data for compliance and coaching.</p></div></div>
-        <div class="two-col">
-          <div>
-            <div class="card mb-16">
-              <div class="section-title mb-16">Export settings</div>
-              <div class="form-group"><label class="form-label">Date range</label><select class="form-select"><option>Last 30 days</option><option>Last 90 days</option><option>This year</option><option>All time</option></select></div>
-              <div class="form-group"><label class="form-label">Filter by quiz</label><select class="form-select"><option>All quizzes</option><option>Refund Policy v2</option><option>Escalation SOP</option></select></div>
-              <div class="form-group"><label class="form-label">Format</label><select class="form-select"><option>CSV (.csv)</option><option>Excel (.xlsx)</option></select></div>
-              <div style="display:flex;gap:10px;">
-                <button class="btn btn-primary" onclick="exportCSV()" style="flex:1;justify-content:center;"><i class="ti ti-download"></i> Export Results</button>
-                <button class="btn btn-secondary" onclick="showNotif('Summary report downloaded.')"><i class="ti ti-file-analytics"></i> Summary</button>
-              </div>
-            </div>
-          </div>
-          <div>
-            <div class="card">
-              <div class="section-title mb-12">Quick exports</div>
-              <div style="display:flex;flex-direction:column;gap:12px;">
-                <div class="material-item" style="cursor:pointer;" onclick="exportCSV()"><div class="file-icon file-pdf"><i class="ti ti-table" style="color:#dc2626;"></i></div><div class="material-info"><div class="material-name">Full results data</div><div class="material-meta">All submissions, scores, timestamps</div></div><i class="ti ti-download" style="color:var(--text-3);"></i></div>
-                <div class="material-item" style="cursor:pointer;" onclick="showNotif('Employee summary downloaded.')"><div class="file-icon file-doc"><i class="ti ti-users"></i></div><div class="material-info"><div class="material-name">Employee summary</div><div class="material-meta">Averages, trends, coaching flags</div></div><i class="ti ti-download" style="color:var(--text-3);"></i></div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- SETTINGS -->
-      <div id="admin-settings" class="page">
-        <div class="topbar"><div class="topbar-left"><h1>Settings</h1><p>Configure your training platform.</p></div></div>
-        <div class="two-col">
-          <div>
-            <div class="card mb-16">
-              <div class="section-title mb-16">Quiz settings</div>
-              <div class="form-group"><label class="form-label">Passing score (%)</label><input type="number" class="form-input" value="75" style="width:100px;"></div>
-              <div class="form-group"><label class="form-label">Show results to participant</label><select class="form-select"><option>Immediately after submission</option><option>After admin review</option><option>Never</option></select></div>
-              <div class="form-group"><label class="form-label">Allow retakes</label><select class="form-select"><option>Yes — unlimited</option><option>Yes — up to 3 times</option><option>No</option></select></div>
-              <div class="form-group"><label class="form-label">Time limit</label><select class="form-select"><option>No limit</option><option>15 minutes</option><option>30 minutes</option><option>60 minutes</option></select></div>
-              <button class="btn btn-primary btn-sm" onclick="showNotif('Settings saved.')"><i class="ti ti-device-floppy"></i> Save settings</button>
-            </div>
-          </div>
-          <div>
-            <div class="card mb-16">
-              <div class="section-title mb-16">Branding</div>
-              <div class="form-group"><label class="form-label">Company name</label><input type="text" class="form-input" value="Acme Corp"></div>
-              <div class="form-group"><label class="form-label">Platform tagline</label><input type="text" class="form-input" value="Training Excellence Program"></div>
-              <button class="btn btn-secondary btn-sm" onclick="showNotif('Branding updated.')">Update branding</button>
-            </div>
-            <div class="card">
-              <div class="section-title mb-12">Admin password</div>
-              <div class="form-group"><label class="form-label">New password</label><input type="password" class="form-input" id="new-pw" placeholder="Enter new password"></div>
-              <button class="btn btn-danger btn-sm" onclick="changePassword()">Change password</button>
-            </div>
-          </div>
-        </div>
-      </div>
-
-    </div><!-- /main -->
-  </div><!-- /admin-shell -->
-
-  <!-- ═══════════════════════════════════════
-       PARTICIPANT INTERFACE
-  ═══════════════════════════════════════ -->
-  <div id="participant-shell" style="display:none;background:var(--bg);min-height:100vh;padding-bottom:70px;">
-
-    <!-- Name entry -->
-    <div id="p-name-entry" style="display:flex;align-items:center;justify-content:center;min-height:90vh;padding:40px 20px;">
-      <div style="text-align:center;max-width:400px;width:100%;">
-        <div style="width:56px;height:56px;background:var(--brand);border-radius:14px;display:flex;align-items:center;justify-content:center;margin:0 auto 20px;"><i class="ti ti-clipboard-list" style="font-size:26px;color:#fff;"></i></div>
-        <h2 style="font-size:22px;font-weight:600;margin-bottom:6px;">Ready to begin?</h2>
-        <p style="font-size:14px;color:var(--text-2);margin-bottom:24px;">Refund Policy Assessment · 5 questions · ~5 minutes</p>
-        <div class="form-group"><label class="form-label">Your full name</label><input type="text" class="form-input" id="participant-name" placeholder="e.g. Sarah Chen" onkeydown="if(event.key==='Enter')startQuiz()"></div>
-        <div class="form-group"><label class="form-label">Team / department (optional)</label><input type="text" class="form-input" placeholder="e.g. Customer Success"></div>
-        <button class="btn btn-primary" style="width:100%;justify-content:center;padding:11px;" onclick="startQuiz()"><i class="ti ti-player-play"></i> Start Assessment</button>
-        <p style="font-size:12px;color:var(--text-3);margin-top:12px;">No account required. Results submitted automatically.</p>
-        <div style="margin-top:16px;"><button class="btn btn-ghost btn-sm" onclick="showParticipant(); showPView('p-simulation')"><i class="ti ti-message-chatbot"></i> Try a simulation instead</button></div>
-      </div>
+<!-- LOGIN -->
+<div id="page-login" style="display:none;" class="lw">
+  <div class="lc">
+    <div style="display:flex;justify-content:center;margin-bottom:24px;gap:10px;align-items:center;">
+      <div class="logo-ic" style="width:40px;height:40px;"><i class="ti ti-bolt" style="color:#fff;font-size:20px;"></i></div>
+      <span style="font-size:18px;font-weight:600;">Train<span style="color:var(--brand);">IQ</span></span>
     </div>
+    <h2 style="font-size:20px;font-weight:600;text-align:center;margin-bottom:4px;">Admin Login</h2>
+    <p style="font-size:13px;color:var(--t2);text-align:center;margin-bottom:24px;">Manage your training platform</p>
+    <div id="login-error" class="le">Incorrect password. Default: <strong>admin123</strong></div>
+    <div class="fg"><label class="fl">Password</label><input type="password" class="fi" id="admin-pw" placeholder="Enter admin password" onkeydown="if(event.key==='Enter')doLogin()"></div>
+    <button class="btn bp" style="width:100%;justify-content:center;" onclick="doLogin()"><i class="ti ti-login"></i> Sign In</button>
+    <p style="font-size:12px;color:var(--t3);text-align:center;margin-top:14px;">Default password: <strong>admin123</strong></p>
+    <button class="btn bg bsm" style="width:100%;justify-content:center;margin-top:8px;" onclick="showLanding()"><i class="ti ti-arrow-left"></i> Back</button>
+  </div>
+</div>
 
-    <!-- Quiz taking -->
-    <div id="p-quiz-take" style="display:none;">
-      <div class="quiz-take-wrap">
-        <div class="quiz-header-bar">
-          <div><div class="quiz-title">Refund Policy Assessment</div><div style="font-size:12px;color:var(--text-3);margin-top:3px;" id="quiz-progress-text">Question 1 of 5</div></div>
-          <div style="display:flex;align-items:center;gap:12px;">
-            <div class="timer-chip"><i class="ti ti-clock"></i> <span id="timer-display">10:00</span></div>
-            <div style="font-size:12px;color:var(--text-3);" id="q-counter">1/5</div>
+<!-- ADMIN SHELL -->
+<div id="admin-shell" class="shell" style="display:none;">
+  <nav class="sidebar">
+    <div class="sb-brand"><div class="logo"><div class="logo-ic"><i class="ti ti-bolt"></i></div><span class="logo-tx">Train<span>IQ</span></span></div></div>
+    <div class="sb-sec">
+      <div class="sb-lbl">Overview</div>
+      <div class="si active" onclick="an('dashboard',this)"><i class="ti ti-layout-dashboard"></i> Dashboard</div>
+      <div class="si" onclick="an('analytics',this)"><i class="ti ti-chart-line"></i> Analytics</div>
+    </div>
+    <div class="sb-sec">
+      <div class="sb-lbl">Content</div>
+      <div class="si" onclick="an('materials',this)"><i class="ti ti-files"></i> My Materials</div>
+      <div class="si" onclick="an('generate',this)"><i class="ti ti-sparkles"></i> AI Generate</div>
+      <div class="si" onclick="an('quizzes',this)"><i class="ti ti-clipboard-list"></i> Quizzes</div>
+    </div>
+    <div class="sb-sec">
+      <div class="sb-lbl">Results</div>
+      <div class="si" onclick="an('results',this)"><i class="ti ti-table"></i> All Results</div>
+      <div class="si" onclick="an('employees',this)"><i class="ti ti-users"></i> Employees</div>
+      <div class="si" onclick="an('export',this)"><i class="ti ti-download"></i> Export</div>
+    </div>
+    <div class="sb-sec">
+      <div class="sb-lbl">Settings</div>
+      <div class="si" onclick="an('settings',this)"><i class="ti ti-settings"></i> Settings</div>
+    </div>
+    <div class="sb-foot">
+      <div class="sb-user"><div class="av">AD</div><div><div class="un">Admin</div><div class="ur">Administrator</div></div></div>
+      <div class="si mt4" onclick="showLanding()" style="color:rgba(255,255,255,.4);font-size:12.5px;"><i class="ti ti-logout"></i> Sign out</div>
+    </div>
+  </nav>
+  <div class="main">
+
+    <!-- DASHBOARD -->
+    <div id="admin-dashboard" class="page active">
+      <div class="topbar"><div><h1>Dashboard</h1><p>Welcome back.</p></div><div class="tr"><button class="btn bp bsm" onclick="an('materials',document.querySelectorAll('.si')[2])"><i class="ti ti-plus"></i> Add Content</button></div></div>
+      <div class="sg">
+        <div class="sc"><div class="lbl">Quizzes Done</div><div class="val" id="s-comp">0</div></div>
+        <div class="sc"><div class="lbl">Avg Score</div><div class="val" id="s-avg">—</div></div>
+        <div class="sc"><div class="lbl">Materials</div><div class="val" id="s-docs">0</div></div>
+        <div class="sc"><div class="lbl">Quizzes Created</div><div class="val" id="s-qz">0</div></div>
+      </div>
+      <div class="ms">
+        <div>
+          <div class="card mb16">
+            <div class="sh mb8"><span class="st">Recent activity</span></div>
+            <div style="overflow-x:auto;"><table><thead><tr><th>Name</th><th>Quiz</th><th>Score</th><th>Date</th><th>Status</th></tr></thead><tbody id="dash-tbody"><tr><td colspan="5"><div class="es" style="padding:20px;"><i class="ti ti-clipboard-off"></i><p>No results yet.</p></div></td></tr></tbody></table></div>
           </div>
         </div>
-        <div class="progress-bar mb-16"><div class="progress-fill" id="quiz-progress-bar" style="width:20%;"></div></div>
-        <div id="quiz-questions-container">
-          <div class="quiz-q-slide" data-q="0">
-            <div class="question-card"><div class="question-header"><span class="question-num">Question 1 of 5</span><span class="question-type-badge">Multiple choice</span></div><div class="question-text">What is the maximum number of days a customer has to initiate a standard return with a receipt?</div><div class="option-list"><div class="option" onclick="selectOption(this,0)"><div class="option-letter">A</div> 14 days</div><div class="option" onclick="selectOption(this,0)"><div class="option-letter">B</div> 21 days</div><div class="option" onclick="selectOption(this,0)"><div class="option-letter">C</div> 30 days</div><div class="option" onclick="selectOption(this,0)"><div class="option-letter">D</div> 60 days</div></div></div>
-            <div style="display:flex;justify-content:flex-end;margin-top:10px;"><button class="btn btn-primary" onclick="nextQuestion(1)">Next <i class="ti ti-arrow-right"></i></button></div>
-          </div>
-          <div class="quiz-q-slide" data-q="1" style="display:none;">
-            <div class="question-card"><div class="question-header"><span class="question-num">Question 2 of 5</span><span class="question-type-badge">True / False</span></div><div class="question-text">A customer who paid with a gift card is entitled to a full cash refund for any returned item.</div><div class="option-list"><div class="option" onclick="selectOption(this,1)"><div class="option-letter">T</div> True</div><div class="option" onclick="selectOption(this,1)"><div class="option-letter">F</div> False</div></div></div>
-            <div style="display:flex;justify-content:space-between;margin-top:10px;"><button class="btn btn-secondary" onclick="nextQuestion(0)"><i class="ti ti-arrow-left"></i> Back</button><button class="btn btn-primary" onclick="nextQuestion(2)">Next <i class="ti ti-arrow-right"></i></button></div>
-          </div>
-          <div class="quiz-q-slide" data-q="2" style="display:none;">
-            <div class="question-card"><div class="question-header"><span class="question-num">Question 3 of 5</span><span class="question-type-badge">Scenario</span></div><div class="question-text">A customer calls about a damaged item received 45 days ago — they have the receipt. What do you do?</div><div class="option-list"><div class="option" onclick="selectOption(this,2)"><div class="option-letter">A</div> Deny — it's past 30 days</div><div class="option" onclick="selectOption(this,2)"><div class="option-letter">B</div> Process a full refund — damaged items are covered regardless of window</div><div class="option" onclick="selectOption(this,2)"><div class="option-letter">C</div> Offer store credit only</div><div class="option" onclick="selectOption(this,2)"><div class="option-letter">D</div> Escalate to a manager immediately</div></div></div>
-            <div style="display:flex;justify-content:space-between;margin-top:10px;"><button class="btn btn-secondary" onclick="nextQuestion(1)"><i class="ti ti-arrow-left"></i> Back</button><button class="btn btn-primary" onclick="nextQuestion(3)">Next <i class="ti ti-arrow-right"></i></button></div>
-          </div>
-          <div class="quiz-q-slide" data-q="3" style="display:none;">
-            <div class="question-card"><div class="question-header"><span class="question-num">Question 4 of 5</span><span class="question-type-badge">Multiple choice</span></div><div class="question-text">When should you escalate a complaint to Tier-2 support?</div><div class="option-list"><div class="option" onclick="selectOption(this,3)"><div class="option-letter">A</div> When the customer raises their voice</div><div class="option" onclick="selectOption(this,3)"><div class="option-letter">B</div> After being on the call for more than 5 minutes</div><div class="option" onclick="selectOption(this,3)"><div class="option-letter">C</div> When issue requires access you don't have, or after two failed resolution attempts</div><div class="option" onclick="selectOption(this,3)"><div class="option-letter">D</div> Always ask a supervisor before helping</div></div></div>
-            <div style="display:flex;justify-content:space-between;margin-top:10px;"><button class="btn btn-secondary" onclick="nextQuestion(2)"><i class="ti ti-arrow-left"></i> Back</button><button class="btn btn-primary" onclick="nextQuestion(4)">Next <i class="ti ti-arrow-right"></i></button></div>
-          </div>
-          <div class="quiz-q-slide" data-q="4" style="display:none;">
-            <div class="question-card"><div class="question-header"><span class="question-num">Question 5 of 5</span><span class="question-type-badge">True / False</span></div><div class="question-text">A customer does not need to provide a reason for returning an item within the return window.</div><div class="option-list"><div class="option" onclick="selectOption(this,4)"><div class="option-letter">T</div> True</div><div class="option" onclick="selectOption(this,4)"><div class="option-letter">F</div> False</div></div></div>
-            <div style="display:flex;justify-content:space-between;margin-top:10px;"><button class="btn btn-secondary" onclick="nextQuestion(3)"><i class="ti ti-arrow-left"></i> Back</button><button class="btn btn-success" onclick="submitQuiz()"><i class="ti ti-circle-check"></i> Submit Quiz</button></div>
-          </div>
+        <div>
+          <div class="card mb16"><div class="st mb12">My materials</div><div id="dash-mats"></div><button class="btn bs bsm" style="width:100%;justify-content:center;margin-top:12px;" onclick="an('materials',document.querySelectorAll('.si')[2])"><i class="ti ti-plus"></i> Add Material</button></div>
+          <div class="card"><div class="st mb12">My quizzes</div><div id="dash-qzs"></div><button class="btn bs bsm" style="width:100%;justify-content:center;margin-top:12px;" onclick="an('generate',document.querySelectorAll('.si')[3])"><i class="ti ti-sparkles"></i> Generate Quiz</button></div>
         </div>
       </div>
     </div>
 
-    <!-- Results -->
-    <div id="p-results" style="display:none;">
-      <div class="quiz-take-wrap">
-        <div class="result-hero">
-          <div class="result-score-ring" style="background:conic-gradient(var(--brand) 0% 80%,var(--border) 80%);">
-            <div class="result-score-inner"><div class="score-pct">80%</div><div class="score-label">Score</div></div>
+    <!-- MATERIALS -->
+    <div id="admin-materials" class="page">
+      <div class="topbar"><div><h1>My Materials</h1><p>Paste your training content here.</p></div><div class="tr"><button class="btn bp bsm" onclick="showAddMat()"><i class="ti ti-plus"></i> Add Material</button></div></div>
+      <div class="ms">
+        <div>
+          <div id="add-mat-form" class="card mb16" style="display:none;">
+            <div class="st mb16">Add training material</div>
+            <div class="fg"><label class="fl">Title (e.g. "Refund Policy", "Escalation SOP")</label><input type="text" class="fi" id="mat-title" placeholder="Enter a title"></div>
+            <div class="fg"><label class="fl">Paste your content below</label><textarea class="fta" id="mat-content" rows="14" placeholder="Paste your SOP, policy, training guide, or any text here...&#10;&#10;The more detail you include, the better the AI-generated questions will be."></textarea></div>
+            <div style="display:flex;gap:10px;"><button class="btn bp" onclick="saveMat()" style="flex:1;justify-content:center;"><i class="ti ti-device-floppy"></i> Save Material</button><button class="btn bs" onclick="document.getElementById('add-mat-form').style.display='none'">Cancel</button></div>
           </div>
-          <h2 style="font-size:19px;font-weight:600;margin-bottom:4px;">Quiz Complete!</h2>
-          <p style="font-size:13.5px;color:var(--text-2);">You answered 4 out of 5 questions correctly.</p>
-          <span class="badge-status badge-success" style="display:inline-flex;margin-top:8px;">Passed — above 75% threshold</span>
-        </div>
-        <div class="two-col mb-16">
-          <div class="card" style="text-align:center;"><div style="font-size:12px;color:var(--text-3);margin-bottom:6px;">Time taken</div><div style="font-size:20px;font-weight:600;" id="result-time">—</div></div>
-          <div class="card" style="text-align:center;"><div style="font-size:12px;color:var(--text-3);margin-bottom:6px;">Questions</div><div style="font-size:20px;font-weight:600;">4 / 5 correct</div></div>
-        </div>
-        <div class="card mb-16">
-          <div class="section-title mb-12">Answer review</div>
-          <div style="display:flex;flex-direction:column;gap:10px;font-size:13.5px;">
-            <div class="flex-row"><i class="ti ti-circle-check" style="color:var(--success);font-size:18px;"></i> Q1: Return window — Correct</div>
-            <div class="flex-row"><i class="ti ti-circle-check" style="color:var(--success);font-size:18px;"></i> Q2: Gift card refunds — Correct</div>
-            <div class="flex-row"><i class="ti ti-circle-check" style="color:var(--success);font-size:18px;"></i> Q3: Damaged item scenario — Correct</div>
-            <div class="flex-row"><i class="ti ti-circle-x" style="color:var(--danger);font-size:18px;"></i> Q4: Escalation policy — Incorrect <span class="text-muted" style="margin-left:4px;">(Correct: Option C)</span></div>
-            <div class="flex-row"><i class="ti ti-circle-check" style="color:var(--success);font-size:18px;"></i> Q5: No-reason returns — Correct</div>
-          </div>
-        </div>
-        <div style="display:flex;gap:10px;">
-          <button class="btn btn-primary" onclick="showPView('p-name-entry')" style="flex:1;justify-content:center;"><i class="ti ti-refresh"></i> Retake quiz</button>
-          <button class="btn btn-secondary" onclick="showLanding()">Back to home</button>
-        </div>
-      </div>
-    </div>
-
-    <!-- Simulation -->
-    <div id="p-simulation" style="display:none;">
-      <div class="quiz-take-wrap">
-        <div class="quiz-header-bar mb-16">
-          <div><div class="quiz-title">Customer Service Simulation</div><div style="font-size:12px;color:var(--text-3);margin-top:3px;">Respond as you would on a real support call</div></div>
-          <span class="badge-status badge-warning"><i class="ti ti-live-view"></i> Live scenario</span>
-        </div>
-        <div class="card mb-12">
-          <div style="font-size:12px;color:var(--text-3);margin-bottom:8px;font-weight:500;text-transform:uppercase;letter-spacing:0.5px;">Scenario context</div>
-          <div style="font-size:13.5px;color:var(--text-2);line-height:1.6;">An upset customer is calling about a damaged item they received 40 days ago. They're demanding a full refund. Apply your knowledge of the return policy to handle this appropriately.</div>
-        </div>
-        <div class="chat-messages mb-12" id="sim-chat">
-          <div class="chat-bubble chat-customer"><strong>Customer:</strong> Hi, I need to speak to someone about a terrible experience. I ordered a blender and it arrived completely broken. I've been waiting 40 days and I'm absolutely furious.</div>
-          <div class="chat-bubble chat-customer" style="margin-top:4px;">I want my money back NOW. This is unacceptable.</div>
-        </div>
-        <div id="sim-response-area">
-          <div class="form-group mb-8"><textarea class="form-textarea" id="sim-response" placeholder="Type your response as a customer service representative..." rows="3"></textarea></div>
-          <div style="display:flex;gap:8px;flex-wrap:wrap;">
-            <button class="btn btn-primary btn-sm" onclick="sendSimResponse()"><i class="ti ti-send"></i> Send Response</button>
-            <button class="btn btn-secondary btn-sm" onclick="showNotif('Hint: Acknowledge the issue first, then apply the damaged-item exception policy.')"><i class="ti ti-bulb"></i> Hint</button>
-          </div>
-        </div>
-        <div id="sim-scoring" style="display:none;margin-top:20px;">
           <div class="card">
-            <div class="section-title mb-12">Simulation score</div>
-            <div style="display:flex;flex-direction:column;">
-              <div class="sim-score-row"><span class="sim-criterion">Accuracy & policy adherence</span><span class="sim-pts" style="color:var(--success);">18/20</span></div>
-              <div class="sim-score-row"><span class="sim-criterion">Empathy & tone</span><span class="sim-pts" style="color:var(--success);">17/20</span></div>
-              <div class="sim-score-row"><span class="sim-criterion">Problem-solving</span><span class="sim-pts" style="color:var(--warning);">14/20</span></div>
-              <div class="sim-score-row"><span class="sim-criterion">Communication clarity</span><span class="sim-pts" style="color:var(--success);">16/20</span></div>
-              <div class="sim-score-row"><span class="sim-criterion">Professionalism</span><span class="sim-pts" style="color:var(--success);">19/20</span></div>
+            <div class="sh"><span class="st">Saved materials</span><span class="tm" id="mat-count">0 items</span></div>
+            <div id="mats-list"><div class="es"><i class="ti ti-clipboard-text"></i><p>No materials yet. Click "Add Material" to paste your first training document.</p></div></div>
+          </div>
+        </div>
+        <div>
+          <div class="card">
+            <div class="st mb12">Tips for best results</div>
+            <div style="display:flex;flex-direction:column;gap:10px;font-size:13px;color:var(--t2);line-height:1.6;">
+              <div>✅ Paste complete policy documents</div>
+              <div>✅ Include specific rules and procedures</div>
+              <div>✅ The more detail, the better</div>
+              <div>✅ Add multiple separate materials</div>
+              <div>✅ Each material generates its own quiz</div>
             </div>
-            <div class="section-divider"></div>
-            <div class="flex-between"><span class="fw-500">Total score</span><span style="font-size:18px;font-weight:700;color:var(--brand);">84/100</span></div>
-            <div style="margin-top:12px;padding:12px;background:#f0fdf4;border-radius:8px;border:1px solid #bbf7d0;font-size:13px;color:#166534;line-height:1.55;"><strong>Feedback:</strong> Excellent empathy and professionalism. You correctly identified the damaged-item exception. Consider offering a proactive apology before diving into policy details.</div>
           </div>
         </div>
       </div>
     </div>
 
-    <!-- Participant nav -->
-    <div class="p-nav">
-      <button class="btn btn-ghost btn-sm" onclick="showPView('p-name-entry')"><i class="ti ti-home"></i> Home</button>
-      <button class="btn btn-ghost btn-sm" onclick="showPView('p-quiz-take')"><i class="ti ti-clipboard-list"></i> Quiz</button>
-      <button class="btn btn-ghost btn-sm" onclick="showPView('p-simulation')"><i class="ti ti-message-chatbot"></i> Simulation</button>
-      <button class="btn btn-ghost btn-sm" onclick="showLanding()"><i class="ti ti-logout"></i> Exit</button>
+    <!-- AI GENERATE -->
+    <div id="admin-generate" class="page">
+      <div class="topbar"><div><h1>AI Quiz Generator</h1><p>Select a material and generate a quiz instantly.</p></div></div>
+      <div class="ms">
+        <div>
+          <div class="card mb16">
+            <div class="st mb16">Generate a quiz</div>
+            <div class="fg">
+              <label class="fl">Select training material</label>
+              <select class="fsel" id="gen-src" onchange="previewSrc()"><option value="">— Choose a material —</option></select>
+              <div id="gen-preview" style="margin-top:8px;"></div>
+            </div>
+            <div class="fg"><label class="fl">Quiz title</label><input type="text" class="fi" id="gen-title" placeholder="e.g. Refund Policy Assessment"></div>
+            <div class="g2" style="gap:12px;">
+              <div class="fg"><label class="fl">Number of questions</label><select class="fsel" id="gen-count"><option value="5">5</option><option value="8">8</option><option value="10" selected>10</option><option value="15">15</option></select></div>
+              <div class="fg"><label class="fl">Difficulty</label><select class="fsel" id="gen-diff"><option>Mixed</option><option>Easy</option><option>Medium</option><option>Hard</option></select></div>
+            </div>
+            <div class="fg">
+              <label class="fl">Question types</label>
+              <div style="display:flex;gap:12px;flex-wrap:wrap;margin-top:4px;">
+                <label style="display:flex;align-items:center;gap:5px;font-size:13px;cursor:pointer;"><input type="checkbox" id="qt-mc" checked> Multiple choice</label>
+                <label style="display:flex;align-items:center;gap:5px;font-size:13px;cursor:pointer;"><input type="checkbox" id="qt-tf" checked> True / False</label>
+                <label style="display:flex;align-items:center;gap:5px;font-size:13px;cursor:pointer;"><input type="checkbox" id="qt-sc"> Scenario-based</label>
+              </div>
+            </div>
+            <button class="btn bp" id="gen-btn" onclick="genQuiz()" style="width:100%;justify-content:center;padding:11px;"><i class="ti ti-sparkles"></i> Generate Quiz with AI</button>
+          </div>
+          <div id="gen-loading" style="display:none;" class="ail mb16"><div class="ad"></div><div class="ad"></div><div class="ad"></div><span id="gen-msg">Reading your content and writing questions...</span></div>
+          <div id="gen-output" style="display:none;">
+            <div class="sh mb12"><span class="st" id="gen-out-title">Generated Quiz</span><button class="btn bg bsm" onclick="genQuiz()"><i class="ti ti-refresh"></i> Regenerate</button></div>
+            <div id="gen-qlist"></div>
+            <div style="display:flex;gap:10px;margin-top:16px;">
+              <button class="btn bp" onclick="publishQuiz()" style="flex:1;justify-content:center;"><i class="ti ti-circle-check"></i> Save &amp; Publish Quiz</button>
+              <button class="btn bs" onclick="document.getElementById('gen-output').style.display='none'">Discard</button>
+            </div>
+          </div>
+        </div>
+        <div>
+          <div class="card mb16">
+            <div class="st mb12">How it works</div>
+            <div style="display:flex;flex-direction:column;gap:12px;font-size:13px;color:var(--t2);">
+              <div class="fr"><div style="width:24px;height:24px;border-radius:50%;background:var(--brand-lt);color:var(--brand);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0;">1</div>Add your content in My Materials</div>
+              <div class="fr"><div style="width:24px;height:24px;border-radius:50%;background:var(--brand-lt);color:var(--brand);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0;">2</div>Select it here and click Generate</div>
+              <div class="fr"><div style="width:24px;height:24px;border-radius:50%;background:var(--brand-lt);color:var(--brand);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0;">3</div>AI reads your content and writes questions</div>
+              <div class="fr"><div style="width:24px;height:24px;border-radius:50%;background:var(--brand-lt);color:var(--brand);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0;">4</div>Review then publish — share the link!</div>
+            </div>
+          </div>
+          <div class="card"><div class="st mb12">Published quizzes</div><div id="gen-saved"><div class="tm" style="font-size:13px;">No quizzes yet.</div></div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- QUIZZES -->
+    <div id="admin-quizzes" class="page">
+      <div class="topbar"><div><h1>Quizzes</h1><p>Manage and share your assessments.</p></div></div>
+      <div class="card"><div id="qz-wrap"><div class="es"><i class="ti ti-clipboard-list"></i><p>No quizzes yet. Go to AI Generate to create your first quiz.</p></div></div></div>
+    </div>
+
+    <!-- RESULTS -->
+    <div id="admin-results" class="page">
+      <div class="topbar"><div><h1>All Results</h1><p>Every quiz submission from your team.</p></div><div class="tr"><input type="text" class="fi" placeholder="Search..." style="width:200px;" oninput="filterRes(this.value)"><button class="btn bs bsm" onclick="exportCSV()"><i class="ti ti-download"></i> Export CSV</button></div></div>
+      <div class="card"><div style="overflow-x:auto;"><table><thead><tr><th>Name</th><th>Quiz</th><th>Score</th><th>Duration</th><th>Date</th><th>Status</th></tr></thead><tbody id="res-tbody"><tr><td colspan="6"><div class="es" style="padding:20px;"><i class="ti ti-clipboard-off"></i><p>No results yet.</p></div></td></tr></tbody></table></div></div>
+    </div>
+
+    <!-- ANALYTICS -->
+    <div id="admin-analytics" class="page">
+      <div class="topbar"><div><h1>Analytics</h1><p>Performance overview.</p></div></div>
+      <div class="sg">
+        <div class="sc"><div class="lbl">Pass Rate</div><div class="val" id="an-pass">—</div></div>
+        <div class="sc"><div class="lbl">Total Attempts</div><div class="val" id="an-tot">0</div></div>
+        <div class="sc"><div class="lbl">Highest Score</div><div class="val" id="an-hi">—</div></div>
+        <div class="sc"><div class="lbl">Lowest Score</div><div class="val" id="an-lo">—</div></div>
+      </div>
+      <div class="card"><div class="st mb12">Score distribution</div><div style="position:relative;height:200px;"><canvas id="dist-chart"></canvas></div></div>
+    </div>
+
+    <!-- EMPLOYEES -->
+    <div id="admin-employees" class="page">
+      <div class="topbar"><div><h1>Employees</h1><p>Individual performance profiles.</p></div></div>
+      <div class="card"><div id="emp-wrap"><div class="es"><i class="ti ti-users"></i><p>No results yet. Once employees take quizzes they appear here.</p></div></div></div>
+    </div>
+
+    <!-- EXPORT -->
+    <div id="admin-export" class="page">
+      <div class="topbar"><div><h1>Export</h1><p>Download your data.</p></div></div>
+      <div class="g2">
+        <div class="card">
+          <div class="st mb16">Export options</div>
+          <button class="btn bp" onclick="exportCSV()" style="width:100%;justify-content:center;margin-bottom:10px;"><i class="ti ti-download"></i> Download All Results (CSV)</button>
+          <button class="btn bs" onclick="exportMats()" style="width:100%;justify-content:center;"><i class="ti ti-files"></i> Export Materials List</button>
+        </div>
+        <div class="card">
+          <div class="st mb12">Included in export</div>
+          <div style="font-size:13px;color:var(--t2);line-height:2.2;">✅ Participant name<br>✅ Quiz name<br>✅ Score (%)<br>✅ Pass / Fail<br>✅ Date &amp; time<br>✅ Duration</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SETTINGS -->
+    <div id="admin-settings" class="page">
+      <div class="topbar"><div><h1>Settings</h1></div></div>
+      <div class="g2">
+        <div>
+          <div class="card mb16">
+            <div class="st mb16">Quiz settings</div>
+            <div class="fg"><label class="fl">Passing score (%)</label><input type="number" class="fi" id="set-pass" value="75" style="width:100px;"></div>
+            <div class="fg"><label class="fl">Show results to participant</label><select class="fsel" id="set-sr"><option value="yes">Immediately after submission</option><option value="no">Don't show results</option></select></div>
+            <div class="fg"><label class="fl">Allow retakes</label><select class="fsel" id="set-rt"><option value="yes">Yes</option><option value="no">No</option></select></div>
+            <button class="btn bp bsm" onclick="saveSettings()"><i class="ti ti-device-floppy"></i> Save Settings</button>
+          </div>
+        </div>
+        <div>
+          <div class="card mb16">
+            <div class="st mb16">Branding</div>
+            <div class="fg"><label class="fl">Company name</label><input type="text" class="fi" id="set-co" placeholder="Your company name"></div>
+            <button class="btn bs bsm" onclick="saveSettings()">Update</button>
+          </div>
+          <div class="card mb16">
+            <div class="st mb12">Change password</div>
+            <div class="fg"><label class="fl">New password</label><input type="password" class="fi" id="new-pw" placeholder="Enter new password"></div>
+            <button class="btn bd bsm" onclick="changePw()">Change Password</button>
+          </div>
+          <div class="card">
+            <div class="st mb12" style="color:var(--danger);">Danger zone</div>
+            <button class="btn bd bsm" onclick="clearAll()"><i class="ti ti-trash"></i> Clear All Data</button>
+            <p style="font-size:12px;color:var(--t3);margin-top:8px;">Deletes all materials, quizzes, and results from this browser.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- PARTICIPANT -->
+<div id="p-shell" style="display:none;background:var(--bg);min-height:100vh;padding-bottom:70px;">
+
+  <div id="p-select" style="display:flex;align-items:center;justify-content:center;min-height:90vh;padding:40px 20px;">
+    <div style="text-align:center;max-width:440px;width:100%;">
+      <div style="width:56px;height:56px;background:var(--brand);border-radius:14px;display:flex;align-items:center;justify-content:center;margin:0 auto 20px;"><i class="ti ti-clipboard-list" style="font-size:26px;color:#fff;"></i></div>
+      <h2 style="font-size:22px;font-weight:600;margin-bottom:6px;">Welcome to TrainIQ</h2>
+      <p style="font-size:14px;color:var(--t2);margin-bottom:24px;">Enter your name and select a quiz to begin.</p>
+      <div class="fg"><label class="fl">Your full name</label><input type="text" class="fi" id="p-name" placeholder="e.g. Sarah Chen"></div>
+      <div class="fg"><label class="fl">Select a quiz</label><select class="fsel" id="p-qsel"><option value="">— Choose a quiz —</option></select></div>
+      <button class="btn bp" style="width:100%;justify-content:center;padding:11px;" onclick="startQuiz()"><i class="ti ti-player-play"></i> Start Quiz</button>
+      <div style="margin-top:14px;"><button class="btn bg bsm" onclick="pv('p-sim-entry')"><i class="ti ti-message-chatbot"></i> Try a simulation instead</button></div>
+      <p style="font-size:12px;color:var(--t3);margin-top:12px;">No account required.</p>
     </div>
   </div>
 
-</div><!-- /app -->
+  <div id="p-quiz" style="display:none;">
+    <div class="qtw">
+      <div class="qhb">
+        <div><div class="fw5" id="p-qz-title">Quiz</div><div style="font-size:12px;color:var(--t3);margin-top:3px;" id="p-qz-prog">Question 1</div></div>
+        <div class="tc"><i class="ti ti-clock"></i><span id="p-timer">0m 0s</span></div>
+      </div>
+      <div class="pb mb16"><div class="pf" id="p-pb" style="width:0%;"></div></div>
+      <div id="p-qc"></div>
+    </div>
+  </div>
 
+  <div id="p-results" style="display:none;">
+    <div class="qtw">
+      <div class="rh">
+        <div id="p-ring" style="width:110px;height:110px;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 16px;">
+          <div style="width:86px;height:86px;border-radius:50%;background:var(--surface);display:flex;align-items:center;justify-content:center;flex-direction:column;border:3px solid var(--border);">
+            <div style="font-size:22px;font-weight:700;color:var(--brand);" id="p-pct">—</div>
+            <div style="font-size:10px;color:var(--t3);">Score</div>
+          </div>
+        </div>
+        <h2 style="font-size:19px;font-weight:600;margin-bottom:4px;">Quiz Complete!</h2>
+        <p style="font-size:13.5px;color:var(--t2);" id="p-summary"></p>
+        <span id="p-rbadge" class="badge" style="display:inline-flex;margin-top:8px;"></span>
+      </div>
+      <div class="card mb16"><div class="st mb12">Answer review</div><div id="p-review"></div></div>
+      <div style="display:flex;gap:10px;"><button class="btn bp" onclick="pv('p-select')" style="flex:1;justify-content:center;"><i class="ti ti-refresh"></i> Take another</button><button class="btn bs" onclick="showLanding()">Exit</button></div>
+    </div>
+  </div>
+
+  <div id="p-sim-entry" style="display:none;align-items:center;justify-content:center;min-height:90vh;padding:40px 20px;">
+    <div style="text-align:center;max-width:440px;width:100%;">
+      <div style="width:56px;height:56px;background:#7c3aed;border-radius:14px;display:flex;align-items:center;justify-content:center;margin:0 auto 20px;"><i class="ti ti-message-chatbot" style="font-size:26px;color:#fff;"></i></div>
+      <h2 style="font-size:22px;font-weight:600;margin-bottom:6px;">Customer Simulation</h2>
+      <p style="font-size:14px;color:var(--t2);margin-bottom:24px;">Practice handling a real customer situation. You'll be scored on empathy, accuracy, and professionalism.</p>
+      <div class="fg"><label class="fl">Your full name</label><input type="text" class="fi" id="sim-name" placeholder="e.g. Sarah Chen"></div>
+      <button class="btn bp" style="width:100%;justify-content:center;padding:11px;background:#7c3aed;" onclick="startSim()"><i class="ti ti-player-play"></i> Start Simulation</button>
+      <div style="margin-top:14px;"><button class="btn bg bsm" onclick="pv('p-select')"><i class="ti ti-arrow-left"></i> Back to quizzes</button></div>
+    </div>
+  </div>
+
+  <div id="p-sim" style="display:none;">
+    <div class="qtw">
+      <div class="qhb mb16">
+        <div><div class="fw5">Customer Service Simulation</div><div style="font-size:12px;color:var(--t3);margin-top:3px;">Respond as you would on a real support call</div></div>
+        <span class="badge bg-w"><i class="ti ti-live-view"></i> Live</span>
+      </div>
+      <div class="card mb12" style="background:#fefce8;border-color:#fde68a;"><div style="font-size:11px;color:#92400e;margin-bottom:6px;font-weight:600;text-transform:uppercase;letter-spacing:.5px;">Scenario</div><div style="font-size:13.5px;color:#78350f;line-height:1.6;" id="sim-scene">Loading...</div></div>
+      <div class="cm mb12" id="sim-chat"></div>
+      <div id="sim-resp-area">
+        <div class="fg mb8"><textarea class="fta" id="sim-resp" rows="3" placeholder="Type your response as a customer service representative..."></textarea></div>
+        <div style="display:flex;gap:8px;">
+          <button class="btn bp bsm" onclick="sendSim()"><i class="ti ti-send"></i> Send</button>
+          <button class="btn bs bsm" onclick="showNotif('Hint: Acknowledge the issue with empathy first, then explain the relevant policy clearly.')"><i class="ti ti-bulb"></i> Hint</button>
+        </div>
+      </div>
+      <div id="sim-score-wrap" style="display:none;margin-top:20px;">
+        <div class="card">
+          <div class="st mb12">Simulation score</div>
+          <div id="sim-score-list"></div>
+          <div class="sdiv"></div>
+          <div class="fb"><span class="fw5">Total</span><span style="font-size:18px;font-weight:700;color:var(--brand);" id="sim-total">—</span></div>
+          <div id="sim-fb" style="margin-top:12px;padding:12px;background:#f0fdf4;border-radius:8px;border:1px solid #bbf7d0;font-size:13px;color:#166534;line-height:1.55;"></div>
+          <button class="btn bp" style="width:100%;justify-content:center;margin-top:14px;" onclick="pv('p-select')"><i class="ti ti-home"></i> Done</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="pnav">
+    <button class="btn bg bsm" onclick="pv('p-select')"><i class="ti ti-home"></i> Home</button>
+    <button class="btn bg bsm" onclick="pv('p-sim-entry')"><i class="ti ti-message-chatbot"></i> Simulation</button>
+    <button class="btn bg bsm" onclick="showLanding()"><i class="ti ti-logout"></i> Exit</button>
+  </div>
+</div>
+
+</div>
 <script>
-// ─── State ───
-let timerInterval = null;
-let timeLeft = 600;
-let quizStartTime = null;
-const ADMIN_PASSWORD = 'admin123';
-
-// ─── Navigation ───
-function showLanding() {
-  hide('admin-shell'); hide('participant-shell'); hide('page-login');
-  show('page-landing'); stopTimer();
+// ── STORAGE ──
+const DB={get:(k,d=null)=>{try{const v=localStorage.getItem('tiq_'+k);return v?JSON.parse(v):d}catch{return d}},set:(k,v)=>{try{localStorage.setItem('tiq_'+k,JSON.stringify(v))}catch{}}};
+let mats=DB.get('mats',[]),qzs=DB.get('qzs',[]),ress=DB.get('ress',[]),cfg=DB.get('cfg',{pass:75,sr:'yes',rt:'yes',co:''}),pw=DB.get('pw','admin123');
+let cQuiz=null,cIdx=0,uAns=[],tInt=null,tStart=null,cName='',pQZ=null,simScene=null,simTurns=0;
+function save(){DB.set('mats',mats);DB.set('qzs',qzs);DB.set('ress',ress);DB.set('cfg',cfg);}
+// ── NAV ──
+function showLanding(){hideAll();show('page-landing');clearInterval(tInt);}
+function showLogin(){hideAll();show('page-login');document.getElementById('admin-pw').value='';document.getElementById('login-error').style.display='none';}
+function showParticipant(){hideAll();show('p-shell');popQSel();pv('p-select');}
+function hideAll(){['page-landing','page-login','admin-shell','p-shell'].forEach(hide);}
+function show(id){const e=document.getElementById(id);if(e)e.style.display='';}
+function hide(id){const e=document.getElementById(id);if(e)e.style.display='none';}
+function pv(id){['p-select','p-quiz','p-results','p-sim-entry','p-sim'].forEach(v=>{const e=document.getElementById(v);if(e)e.style.display='none';});const el=document.getElementById(id);if(el)el.style.display=id==='p-sim-entry'?'flex':'';}
+function doLogin(){if(document.getElementById('admin-pw').value===pw){hideAll();show('admin-shell');rfDash();}else document.getElementById('login-error').style.display='block';}
+function an(s,el){document.querySelectorAll('.si').forEach(i=>i.classList.remove('active'));if(el&&el.classList)el.classList.add('active');document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));const pg=document.getElementById('admin-'+s);if(pg)pg.classList.add('active');if(s==='materials')rfMats(),popGS();if(s==='generate')popGS(),rfGS();if(s==='quizzes')rfQzs();if(s==='results')rfRes();if(s==='employees')rfEmp();if(s==='analytics')rfAn();if(s==='settings')ldCfg();if(s==='dashboard')rfDash();}
+// ── MATERIALS ──
+function showAddMat(){document.getElementById('add-mat-form').style.display='';document.getElementById('mat-title').value='';document.getElementById('mat-content').value='';document.getElementById('mat-title').focus();}
+function saveMat(){const t=document.getElementById('mat-title').value.trim(),c=document.getElementById('mat-content').value.trim();if(!t){showNotif('Please enter a title.');return;}if(c.length<30){showNotif('Please paste at least 30 characters of content.');return;}mats.push({id:Date.now(),t,c,d:new Date().toLocaleDateString()});save();document.getElementById('add-mat-form').style.display='none';rfMats();popGS();showNotif('Saved: '+t);}
+function delMat(id){if(!confirm('Delete this material?'))return;mats=mats.filter(m=>m.id!==id);save();rfMats();popGS();}
+function rfMats(){const l=document.getElementById('mats-list'),cnt=document.getElementById('mat-count');if(cnt)cnt.textContent=mats.length+' item'+(mats.length!==1?'s':'');if(!mats.length){l.innerHTML='<div class="es"><i class="ti ti-clipboard-text"></i><p>No materials yet. Click "Add Material" to get started.</p></div>';return;}l.innerHTML=mats.map(m=>`<div class="mi"><div class="fi-ic"><i class="ti ti-file-text"></i></div><div class="mi-info"><div class="mi-name">${e(m.t)}</div><div class="mi-meta">Added ${m.d} · ${m.c.length.toLocaleString()} characters</div></div><div style="display:flex;gap:6px;"><button class="btn bs bsm" onclick="an('generate',document.querySelectorAll('.si')[3]);setTimeout(()=>{document.getElementById('gen-src').value='${m.id}';previewSrc();},120);"><i class="ti ti-sparkles"></i> Generate</button><button class="btn bg bsm" onclick="delMat(${m.id})"><i class="ti ti-trash"></i></button></div></div>`).join('');const dm=document.getElementById('dash-mats');if(dm)dm.innerHTML=mats.length?mats.slice(0,4).map(m=>`<div style="font-size:13px;padding:6px 0;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;"><span>${e(m.t)}</span><span class="tm">${m.c.length.toLocaleString()} chars</span></div>`).join(''):'<div class="tm" style="font-size:13px;">No materials yet.</div>';}
+function popGS(){const s=document.getElementById('gen-src');if(!s)return;s.innerHTML='<option value="">— Choose a material —</option>'+mats.map(m=>`<option value="${m.id}">${e(m.t)}</option>`).join('');}
+function previewSrc(){const s=document.getElementById('gen-src'),pr=document.getElementById('gen-preview');if(!s||!pr)return;const m=mats.find(x=>x.id==s.value);if(m){const sn=m.c.slice(0,200)+(m.c.length>200?'...':'');pr.innerHTML=`<div style="background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:10px;font-size:12px;color:var(--t2);line-height:1.5;">${e(sn)}</div>`;document.getElementById('gen-title').value=m.t+' Assessment';}else pr.innerHTML='';}
+// ── AI GENERATE ──
+async function genQuiz(){
+  const sid=document.getElementById('gen-src').value;
+  if(!sid){showNotif('Please select a training material first.');return;}
+  const mat=mats.find(m=>m.id==sid);if(!mat){showNotif('Material not found.');return;}
+  const title=document.getElementById('gen-title').value.trim()||mat.t+' Assessment';
+  const count=parseInt(document.getElementById('gen-count').value)||10;
+  const diff=document.getElementById('gen-diff').value;
+  const types=[];
+  if(document.getElementById('qt-mc').checked)types.push('multiple choice (4 options labeled A, B, C, D)');
+  if(document.getElementById('qt-tf').checked)types.push('true/false (options: True, False)');
+  if(document.getElementById('qt-sc').checked)types.push('scenario-based customer service situations with 4 options');
+  if(!types.length){showNotif('Select at least one question type.');return;}
+  const btn=document.getElementById('gen-btn');btn.disabled=true;
+  document.getElementById('gen-loading').style.display='flex';
+  document.getElementById('gen-output').style.display='none';
+  const prompt=`You are an expert training quiz creator for customer service teams.\n\nBased on the following training content, generate exactly ${count} quiz questions.\n\nTRAINING CONTENT:\n"""\n${mat.c.slice(0,8000)}\n"""\n\nRequirements:\n- Types to use: ${types.join(', ')}\n- Difficulty: ${diff}\n- Base all questions directly on the content above\n- For multiple choice: exactly 4 options labeled A., B., C., D.\n- For true/false: options are exactly ["True","False"]\n\nRespond ONLY with a valid JSON array. No markdown, no backticks, no explanation. Just the raw JSON:\n[\n  {\n    "question": "Question text?",\n    "type": "multiple_choice",\n    "options": ["A. Option one","B. Option two","C. Option three","D. Option four"],\n    "correct": 0,\n    "explanation": "Short explanation."\n  }\n]\nThe "correct" field is the 0-based index of the correct answer.\nGenerate exactly ${count} questions:`;
+  try{
+    const r=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:4000,messages:[{role:'user',content:prompt}]})});
+    if(!r.ok){const er=await r.json().catch(()=>({}));throw new Error(er.error?.message||'API error '+r.status);}
+    const d=await r.json();
+    let txt=d.content[0].text.trim().replace(/```json\s*/gi,'').replace(/```\s*/gi,'').trim();
+    let qs;try{qs=JSON.parse(txt);}catch{throw new Error('AI returned invalid format. Please try again.');}
+    if(!Array.isArray(qs)||!qs.length)throw new Error('No questions returned. Try again.');
+    pQZ={title,matId:sid,matTitle:mat.t,questions:qs};
+    rfGenQs(qs,title);
+    document.getElementById('gen-out-title').textContent=title+' ('+qs.length+' questions)';
+    document.getElementById('gen-output').style.display='';
+    showNotif('Generated '+qs.length+' questions!');
+  }catch(err){showNotif('Error: '+err.message);console.error(err);}
+  finally{btn.disabled=false;document.getElementById('gen-loading').style.display='none';}
 }
-function showLogin() {
-  hide('page-landing'); hide('admin-shell'); hide('participant-shell');
-  show('page-login');
-  document.getElementById('admin-pw').value = '';
-  document.getElementById('login-error').style.display = 'none';
-}
-function doLogin() {
-  const pw = document.getElementById('admin-pw').value;
-  if(pw === ADMIN_PASSWORD) {
-    hide('page-login'); show('admin-shell');
-    setTimeout(drawDashboardCharts, 150);
-  } else {
-    document.getElementById('login-error').style.display = 'block';
-  }
-}
-function changePassword() {
-  const np = document.getElementById('new-pw').value.trim();
-  if(np.length < 4) { showNotif('Password must be at least 4 characters.'); return; }
-  showNotif('Password changed successfully.');
-}
-function showParticipant() {
-  hide('page-landing'); hide('admin-shell'); hide('page-login');
-  show('participant-shell'); showPView('p-name-entry');
-}
-function show(id) { const e=document.getElementById(id); if(e) e.style.display=''; }
-function hide(id) { const e=document.getElementById(id); if(e) e.style.display='none'; }
-function showPView(id) {
-  ['p-name-entry','p-quiz-take','p-results','p-simulation'].forEach(v=>{
-    const e=document.getElementById(v); if(e) e.style.display='none';
-  });
-  show(id);
-}
-
-// ─── Admin nav ───
-function adminNav(section, el) {
-  document.querySelectorAll('.sidebar-item').forEach(i=>i.classList.remove('active'));
-  if(el && el.classList) el.classList.add('active');
-  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
-  const pg = document.getElementById('admin-'+section);
-  if(pg) pg.classList.add('active');
-  if(section==='analytics') setTimeout(drawAnalyticsCharts, 150);
-}
-
-// ─── Quiz ───
-function startQuiz() {
-  const name = document.getElementById('participant-name').value.trim();
-  if(!name) { document.getElementById('participant-name').focus(); showNotif('Please enter your name to begin.'); return; }
-  showPView('p-quiz-take');
-  timeLeft = 600; quizStartTime = Date.now();
-  updateTimer();
-  timerInterval = setInterval(()=>{ timeLeft--; updateTimer(); if(timeLeft<=0){clearInterval(timerInterval);submitQuiz();} }, 1000);
-  showSlide(0);
-}
-function updateTimer() {
-  const m=Math.floor(timeLeft/60), s=timeLeft%60;
-  document.getElementById('timer-display').textContent = m+':'+(s<10?'0':'')+s;
-}
-function stopTimer() { clearInterval(timerInterval); timerInterval=null; }
-function showSlide(n) {
-  document.querySelectorAll('.quiz-q-slide').forEach((s,i)=>{ s.style.display=i===n?'':'none'; });
-  const total=5;
-  document.getElementById('quiz-progress-text').textContent='Question '+(n+1)+' of '+total;
-  document.getElementById('q-counter').textContent=(n+1)+'/'+total;
-  document.getElementById('quiz-progress-bar').style.width=(((n+1)/total)*100)+'%';
-}
-function nextQuestion(n) { showSlide(n); }
-function selectOption(el) {
-  el.closest('.option-list').querySelectorAll('.option').forEach(o=>o.classList.remove('selected'));
-  el.classList.add('selected');
-}
-function submitQuiz() {
-  stopTimer();
-  const elapsed = quizStartTime ? Math.round((Date.now()-quizStartTime)/1000) : 374;
-  const m=Math.floor(elapsed/60), s=elapsed%60;
-  const el=document.getElementById('result-time');
-  if(el) el.textContent = m+'m '+s+'s';
-  showPView('p-results');
-}
-
-// ─── AI Generate ───
-function runAIGeneration() {
-  document.getElementById('gen-result').style.display='';
-  document.getElementById('ai-loading').style.display='flex';
-  document.getElementById('gen-questions').style.display='none';
-  setTimeout(()=>{
-    document.getElementById('ai-loading').style.display='none';
-    document.getElementById('gen-questions').style.display='';
-  }, 2400);
-}
-
-// ─── Materials ───
-function triggerUpload() { document.getElementById('file-input').click(); }
-function handleFileSelect(input) {
-  if(!input.files.length) return;
-  const file = input.files[0];
-  const list = document.getElementById('materials-list');
-  const item = document.createElement('div');
-  item.className = 'material-item';
-  const isPdf = file.name.endsWith('.pdf');
-  item.innerHTML = `<div class="file-icon ${isPdf?'file-pdf':'file-doc'}"><i class="ti ${isPdf?'ti-file-type-pdf':'ti-file-text'}"></i></div><div class="material-info"><div class="material-name">${file.name}</div><div class="material-meta">Just uploaded · ${(file.size/1024/1024).toFixed(1)} MB · Pending quiz generation</div></div><div class="material-actions"><button class="btn btn-secondary btn-sm" onclick="showNotif('Navigate to AI Generate to create a quiz.')"><i class="ti ti-sparkles"></i></button><button class="btn btn-ghost btn-sm" onclick="removeDoc(this)"><i class="ti ti-trash"></i></button></div>`;
-  list.prepend(item);
-  updateDocCount();
-  showNotif('Uploaded: '+file.name);
-  input.value = '';
-}
-function removeDoc(btn) {
-  btn.closest('.material-item').remove();
-  updateDocCount();
-  showNotif('Document removed.');
-}
-function updateDocCount() {
-  const n = document.querySelectorAll('#materials-list .material-item').length;
-  const el = document.getElementById('doc-count');
-  if(el) el.textContent = n+' file'+(n!==1?'s':'');
-}
-
-// ─── Results filtering ───
-function filterTab(el, type) {
-  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
-  el.classList.add('active');
-  document.querySelectorAll('#results-tbody tr').forEach(row=>{
-    if(type==='all') row.style.display='';
-    else row.style.display = row.dataset.status===type ? '' : 'none';
-  });
-}
-function filterResults(q) {
-  const term = q.toLowerCase();
-  document.querySelectorAll('#results-tbody tr').forEach(row=>{
-    row.style.display = row.textContent.toLowerCase().includes(term) ? '' : 'none';
-  });
-}
-
-// ─── CSV Export ───
-function exportCSV() {
-  const rows = [['Participant','Quiz','Score','Duration','Date','Status']];
-  document.querySelectorAll('#results-tbody tr').forEach(row=>{
-    const cells = row.querySelectorAll('td');
-    if(cells.length) rows.push(Array.from(cells).map(c=>c.textContent.trim()));
-  });
-  const csv = rows.map(r=>r.map(c=>'"'+c.replace(/"/g,'""')+'"').join(',')).join('\n');
-  const blob = new Blob([csv],{type:'text/csv'});
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a'); a.href=url; a.download='trainiq-results.csv'; a.click();
-  URL.revokeObjectURL(url);
-  showNotif('Downloaded trainiq-results.csv');
-}
-
-// ─── Simulation ───
-function sendSimResponse() {
-  const resp = document.getElementById('sim-response').value.trim();
-  if(!resp) { showNotif('Please type a response first.'); return; }
-  const chat = document.getElementById('sim-chat');
-  const bubble = document.createElement('div');
-  bubble.className = 'chat-bubble chat-rep'; bubble.style.marginTop='4px';
-  bubble.textContent = resp;
-  chat.appendChild(bubble);
-  document.getElementById('sim-response').value='';
-  chat.scrollTop = chat.scrollHeight;
-  setTimeout(()=>{
-    const cust = document.createElement('div');
-    cust.className = 'chat-bubble chat-customer'; cust.style.marginTop='4px';
-    cust.innerHTML = '<strong>Customer:</strong> Thank you for clarifying that. Can you confirm how long the refund will take to process?';
-    chat.appendChild(cust);
-    chat.scrollTop = chat.scrollHeight;
-    setTimeout(()=>{ document.getElementById('sim-scoring').style.display=''; }, 800);
-  }, 1000);
-}
-
-// ─── Notifications ───
-function showNotif(msg) {
-  const n=document.getElementById('notif');
-  document.getElementById('notif-msg').textContent=msg;
-  n.classList.add('show');
-  clearTimeout(n._t);
-  n._t = setTimeout(()=>n.classList.remove('show'), 3500);
-}
-
-// ─── Charts ───
-function drawDashboardCharts() {
-  const ctx = document.getElementById('scoreChart');
-  if(!ctx || ctx._c) return;
-  const labels = Array.from({length:30},(_,i)=>'D'+(i+1));
-  const scores = [74,75,73,76,78,77,79,80,78,81,82,80,83,84,82,83,85,84,83,85,86,84,85,86,85,86,87,85,86,86];
-  const passes = [65,66,64,67,70,69,71,73,71,74,75,73,76,77,75,76,78,77,76,78,80,78,79,80,79,80,81,79,80,80];
-  ctx._c = new Chart(ctx,{type:'line',data:{labels,datasets:[
-    {label:'Avg Score',data:scores,borderColor:'#1a56db',backgroundColor:'rgba(26,86,219,0.08)',tension:0.4,borderWidth:2,pointRadius:0,fill:true},
-    {label:'Pass Rate',data:passes,borderColor:'#10b981',backgroundColor:'rgba(16,185,129,0.05)',tension:0.4,borderWidth:2,pointRadius:0,fill:true,borderDash:[4,3]}
-  ]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{ticks:{maxTicksLimit:6,font:{size:11},color:'#94a3b8'},grid:{color:'rgba(0,0,0,0.04)'}},y:{min:60,max:100,ticks:{font:{size:11},color:'#94a3b8',callback:v=>v+'%'},grid:{color:'rgba(0,0,0,0.04)'}}}}});
-}
-function drawAnalyticsCharts() {
-  const c1=document.getElementById('distChart');
-  if(c1&&!c1._c) c1._c=new Chart(c1,{type:'bar',data:{labels:['<60','60–70','70–80','80–90','90+'],datasets:[{data:[8,14,32,38,18],backgroundColor:['#ef4444','#f59e0b','#3b82f6','#1a56db','#10b981'],borderRadius:5}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{ticks:{font:{size:11},color:'#94a3b8'},grid:{display:false}},y:{ticks:{font:{size:11},color:'#94a3b8'},grid:{color:'rgba(0,0,0,0.04)'}}}}});
-  const c2=document.getElementById('typeChart');
-  if(c2&&!c2._c) c2._c=new Chart(c2,{type:'bar',data:{labels:['Knowledge','True/False','Scenario','Simulation'],datasets:[{data:[85,91,74,68],backgroundColor:['#1a56db','#10b981','#f59e0b','#8b5cf6'],borderRadius:5}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{ticks:{font:{size:11},color:'#94a3b8'},grid:{display:false}},y:{min:0,max:100,ticks:{font:{size:11},color:'#94a3b8',callback:v=>v+'%'},grid:{color:'rgba(0,0,0,0.04)'}}}}});
-}
-
-// ─── Keyboard shortcut: Enter on login ───
-document.addEventListener('keydown', e=>{
-  if(e.key==='Enter' && document.getElementById('page-login').style.display!=='none') doLogin();
-});
+function rfGenQs(qs,title){document.getElementById('gen-qlist').innerHTML=qs.map((q,i)=>`<div class="qcard"><div class="qh"><span class="qnum">Q${i+1}</span><span class="qtb">${q.type==='true_false'?'True/False':q.type==='scenario'?'Scenario':'Multiple Choice'}</span></div><div class="qtext">${e(q.question)}</div><div class="opts">${q.options.map((o,oi)=>`<div class="opt ${oi===q.correct?'cor':''}"><div class="ol">${oi===q.correct?'✓':String.fromCharCode(65+oi)}</div>${e(o)}</div>`).join('')}</div>${q.explanation?`<div style="margin-top:10px;padding:8px 12px;background:#f0fdf4;border-radius:6px;font-size:12.5px;color:#166534;"><strong>Why:</strong> ${e(q.explanation)}</div>`:''}</div>`).join('');}
+function publishQuiz(){if(!pQZ){showNotif('Nothing to publish.');return;}const qz={id:Date.now(),title:pQZ.title,matTitle:pQZ.matTitle,questions:pQZ.questions,created:new Date().toLocaleDateString(),completions:0};qzs.push(qz);save();pQZ=null;document.getElementById('gen-output').style.display='none';rfGS();rfQzs();rfDash();showNotif('Quiz published: '+qz.title);}
+function rfGS(){const el=document.getElementById('gen-saved');if(!el)return;el.innerHTML=qzs.length?qzs.map(q=>`<div style="padding:8px 0;border-bottom:1px solid var(--border);font-size:13px;"><div class="fw5">${e(q.title)}</div><div class="tm mt4">${q.questions.length} questions · ${q.completions} completions</div></div>`).join(''):'<div class="tm" style="font-size:13px;">No quizzes yet.</div>';}
+// ── QUIZZES ──
+function rfQzs(){const w=document.getElementById('qz-wrap');if(!qzs.length){w.innerHTML='<div class="es"><i class="ti ti-clipboard-list"></i><p>No quizzes yet. Go to AI Generate to create one.</p></div>';return;}w.innerHTML=`<div style="overflow-x:auto;"><table><thead><tr><th>Quiz Title</th><th>Questions</th><th>Completions</th><th>Avg Score</th><th>Created</th><th>Actions</th></tr></thead><tbody>${qzs.map(q=>{const qr=ress.filter(r=>r.qid===q.id),avg=qr.length?Math.round(qr.reduce((s,r)=>s+r.score,0)/qr.length)+'%':'—';return`<tr><td class="fw5">${e(q.title)}</td><td>${q.questions.length}</td><td>${qr.length}</td><td>${avg}</td><td class="tm">${q.created}</td><td><div class="fr" style="gap:6px;"><button class="btn bg bsm" onclick="cpLink(${q.id})"><i class="ti ti-link"></i></button><button class="btn bd bsm" onclick="delQz(${q.id})"><i class="ti ti-trash"></i></button></div></td></tr>`;}).join('')}</tbody></table></div>`;}
+function delQz(id){if(!confirm('Delete this quiz?'))return;qzs=qzs.filter(q=>q.id!==id);save();rfQzs();rfDash();}
+function cpLink(id){const url=location.href.split('?')[0]+'?quiz='+id;navigator.clipboard.writeText(url).then(()=>showNotif('Quiz link copied!')).catch(()=>showNotif('Link: '+url));}
+// ── RESULTS ──
+function rfRes(){const tb=document.getElementById('res-tbody');if(!tb)return;if(!ress.length){tb.innerHTML='<tr><td colspan="6"><div class="es" style="padding:20px;"><i class="ti ti-clipboard-off"></i><p>No results yet.</p></div></td></tr>';return;}tb.innerHTML=[...ress].reverse().map(r=>{const pass=r.score>=cfg.pass;return`<tr data-n="${e(r.name)}" data-q="${e(r.qt)}"><td class="fw5">${e(r.name)}</td><td>${e(r.qt)}</td><td><span style="color:${pass?'var(--success)':r.score>=50?'var(--warning)':'var(--danger)'};font-weight:600;">${r.score}%</span></td><td class="tm">${r.dur||'—'}</td><td class="tm">${r.date}</td><td><span class="badge ${pass?'bg-s':r.score>=50?'bg-w':'bg-d'}">${pass?'Passed':'Failed'}</span></td></tr>`;}).join('');}
+function filterRes(q){const t=q.toLowerCase();document.querySelectorAll('#res-tbody tr').forEach(r=>{r.style.display=(r.dataset.n||'').toLowerCase().includes(t)||(r.dataset.q||'').toLowerCase().includes(t)?'':'none';});}
+// ── ANALYTICS ──
+function rfAn(){const tot=ress.length;document.getElementById('an-tot').textContent=tot;if(!tot){['an-pass','an-hi','an-lo'].forEach(id=>document.getElementById(id).textContent='—');return;}const sc=ress.map(r=>r.score),passed=ress.filter(r=>r.score>=cfg.pass).length;document.getElementById('an-pass').textContent=Math.round(passed/tot*100)+'%';document.getElementById('an-hi').textContent=Math.max(...sc)+'%';document.getElementById('an-lo').textContent=Math.min(...sc)+'%';drawDist(sc);}
+let dci=null;function drawDist(sc){const ctx=document.getElementById('dist-chart');if(!ctx)return;const b=[0,0,0,0,0];sc.forEach(s=>{if(s<60)b[0]++;else if(s<70)b[1]++;else if(s<80)b[2]++;else if(s<90)b[3]++;else b[4]++;});if(dci)dci.destroy();dci=new Chart(ctx,{type:'bar',data:{labels:['<60','60-69','70-79','80-89','90+'],datasets:[{data:b,backgroundColor:['#ef4444','#f59e0b','#3b82f6','#1a56db','#10b981'],borderRadius:5}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{ticks:{font:{size:11},color:'#94a3b8'},grid:{display:false}},y:{ticks:{precision:0,font:{size:11},color:'#94a3b8'},grid:{color:'rgba(0,0,0,.04)'}}}}});}
+// ── EMPLOYEES ──
+function rfEmp(){const w=document.getElementById('emp-wrap');if(!ress.length){w.innerHTML='<div class="es"><i class="ti ti-users"></i><p>No results yet.</p></div>';return;}const em={};ress.forEach(r=>{if(!em[r.name])em[r.name]={name:r.name,scores:[],qzs:new Set()};em[r.name].scores.push(r.score);em[r.name].qzs.add(r.qt);});const rows=Object.values(em).sort((a,b)=>(b.scores.reduce((s,v)=>s+v,0)/b.scores.length)-(a.scores.reduce((s,v)=>s+v,0)/a.scores.length));w.innerHTML=`<div style="overflow-x:auto;"><table><thead><tr><th>Name</th><th>Quizzes Taken</th><th>Avg Score</th><th>Status</th></tr></thead><tbody>${rows.map(em=>{const avg=Math.round(em.scores.reduce((s,v)=>s+v,0)/em.scores.length);return`<tr><td class="fw5">${e(em.name)}</td><td>${em.qzs.size}</td><td><span style="color:${avg>=cfg.pass?'var(--success)':avg>=50?'var(--warning)':'var(--danger)'};font-weight:600;">${avg}%</span></td><td><span class="badge ${avg>=cfg.pass?'bg-s':avg>=50?'bg-w':'bg-d'}">${avg>=cfg.pass?'On track':avg>=50?'Needs review':'Coaching needed'}</span></td></tr>`;}).join('')}</tbody></table></div>`;}
+// ── DASHBOARD ──
+function rfDash(){document.getElementById('s-docs').textContent=mats.length;document.getElementById('s-qz').textContent=qzs.length;document.getElementById('s-comp').textContent=ress.length;document.getElementById('s-avg').textContent=ress.length?Math.round(ress.reduce((s,r)=>s+r.score,0)/ress.length)+'%':'—';const tb=document.getElementById('dash-tbody');if(tb){if(!ress.length)tb.innerHTML='<tr><td colspan="5"><div class="es" style="padding:20px;"><i class="ti ti-clipboard-off"></i><p>No results yet.</p></div></td></tr>';else tb.innerHTML=[...ress].reverse().slice(0,5).map(r=>{const pass=r.score>=cfg.pass;return`<tr><td class="fw5">${e(r.name)}</td><td>${e(r.qt)}</td><td><span style="color:${pass?'var(--success)':r.score>=50?'var(--warning)':'var(--danger)'};font-weight:600;">${r.score}%</span></td><td class="tm">${r.date}</td><td><span class="badge ${pass?'bg-s':r.score>=50?'bg-w':'bg-d'}">${pass?'Passed':'Failed'}</span></td></tr>`;}).join('');}rfMats();const dq=document.getElementById('dash-qzs');if(dq)dq.innerHTML=qzs.length?qzs.slice(0,4).map(q=>`<div style="font-size:13px;padding:6px 0;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;"><span>${e(q.title)}</span><span class="tm">${q.questions.length} Qs</span></div>`).join(''):'<div class="tm" style="font-size:13px;">No quizzes yet.</div>';}
+// ── SETTINGS ──
+function ldCfg(){document.getElementById('set-pass').value=cfg.pass;document.getElementById('set-sr').value=cfg.sr;document.getElementById('set-rt').value=cfg.rt;document.getElementById('set-co').value=cfg.co||'';}
+function saveSettings(){cfg.pass=parseInt(document.getElementById('set-pass').value)||75;cfg.sr=document.getElementById('set-sr').value;cfg.rt=document.getElementById('set-rt').value;cfg.co=document.getElementById('set-co').value;save();showNotif('Settings saved.');}
+function changePw(){const np=document.getElementById('new-pw').value.trim();if(np.length<4){showNotif('Password must be at least 4 characters.');return;}pw=np;DB.set('pw',np);showNotif('Password changed!');}
+function clearAll(){if(!confirm('Delete ALL data? This cannot be undone.'))return;mats=[];qzs=[];ress=[];save();rfDash();rfMats();rfQzs();rfRes();showNotif('All data cleared.');}
+// ── EXPORT ──
+function exportCSV(){if(!ress.length){showNotif('No results to export.');return;}const rows=[['Name','Quiz','Score (%)','Pass/Fail','Date','Duration']];ress.forEach(r=>rows.push([r.name,r.qt,r.score,r.score>=cfg.pass?'Pass':'Fail',r.date,r.dur||'']));const csv=rows.map(r=>r.map(c=>'"'+(c+'').replace(/"/g,'""')+'"').join(',')).join('\n');const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv'}));a.download='trainiq-results.csv';a.click();showNotif('Downloaded trainiq-results.csv');}
+function exportMats(){if(!mats.length){showNotif('No materials to export.');return;}const rows=[['Title','Characters','Date']];mats.forEach(m=>rows.push([m.t,m.c.length,m.d]));const csv=rows.map(r=>r.map(c=>'"'+(c+'').replace(/"/g,'""')+'"').join(',')).join('\n');const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv'}));a.download='trainiq-materials.csv';a.click();}
+// ── QUIZ TAKING ──
+function popQSel(){const s=document.getElementById('p-qsel');if(!s)return;s.innerHTML='<option value="">— Choose a quiz —</option>'+qzs.map(q=>`<option value="${q.id}">${e(q.title)} (${q.questions.length} questions)</option>`).join('');}
+function startQuiz(){const name=document.getElementById('p-name').value.trim(),qid=document.getElementById('p-qsel').value;if(!name){showNotif('Please enter your name.');return;}if(!qid){showNotif('Please select a quiz.');return;}const qz=qzs.find(q=>q.id==qid);if(!qz){showNotif('Quiz not found.');return;}cName=name;cQuiz=qz;cIdx=0;uAns=new Array(qz.questions.length).fill(null);tStart=Date.now();document.getElementById('p-qz-title').textContent=qz.title;rfQ(0);pv('p-quiz');}
+function fmtT(){const s=Math.floor((Date.now()-tStart)/1000);return Math.floor(s/60)+'m '+(s%60)+'s';}
+function rfQ(idx){const q=cQuiz.questions[idx],tot=cQuiz.questions.length;document.getElementById('p-qz-prog').textContent='Question '+(idx+1)+' of '+tot;document.getElementById('p-pb').style.width=(((idx+1)/tot)*100)+'%';document.getElementById('p-timer').textContent=fmtT();clearInterval(tInt);tInt=setInterval(()=>{document.getElementById('p-timer').textContent=fmtT();},1000);document.getElementById('p-qc').innerHTML=`<div class="qcard"><div class="qh"><span class="qnum">Q${idx+1} of ${tot}</span><span class="qtb">${q.type==='true_false'?'True/False':q.type==='scenario'?'Scenario':'Multiple Choice'}</span></div><div class="qtext">${e(q.question)}</div><div class="opts">${q.options.map((o,oi)=>`<div class="opt ${uAns[idx]===oi?'sel':''}" onclick="selA(${oi})"><div class="ol">${String.fromCharCode(65+oi)}</div>${e(o)}</div>`).join('')}</div></div><div style="display:flex;justify-content:space-between;margin-top:10px;">${idx>0?`<button class="btn bs" onclick="rfQ(${idx-1})"><i class="ti ti-arrow-left"></i> Back</button>`:'<span></span>'}${idx<tot-1?`<button class="btn bp" onclick="rfQ(${idx+1})">Next <i class="ti ti-arrow-right"></i></button>`:`<button class="btn btn-success" style="background:var(--success);color:#fff;display:inline-flex;align-items:center;gap:6px;padding:8px 16px;border-radius:8px;font-size:13.5px;font-weight:500;cursor:pointer;border:none;" onclick="submitQ()"><i class="ti ti-circle-check"></i> Submit Quiz</button>`}</div>`;}
+function selA(oi){uAns[cIdx]=oi;const q=document.getElementById('p-qc');q.querySelectorAll('.opt').forEach((o,i)=>{o.classList.toggle('sel',i===oi);});}
+function submitQ(){clearInterval(tInt);const elapsed=Math.floor((Date.now()-tStart)/1000),dur=Math.floor(elapsed/60)+'m '+(elapsed%60)+'s';let correct=0;cQuiz.questions.forEach((q,i)=>{if(uAns[i]===q.correct)correct++;});const score=Math.round(correct/cQuiz.questions.length*100),pass=score>=cfg.pass;ress.push({name:cName,qid:cQuiz.id,qt:cQuiz.title,score,correct,total:cQuiz.questions.length,pass,date:new Date().toLocaleDateString(),dur});const qi=qzs.findIndex(q=>q.id===cQuiz.id);if(qi>=0)qzs[qi].completions=(qzs[qi].completions||0)+1;save();if(cfg.sr==='no'){showNotif('Quiz submitted! Your results have been recorded.');pv('p-select');return;}document.getElementById('p-pct').textContent=score+'%';document.getElementById('p-summary').textContent='You answered '+correct+' of '+cQuiz.questions.length+' correctly in '+dur+'.';const rb=document.getElementById('p-rbadge');rb.textContent=pass?'Passed':'Failed';rb.className='badge '+(pass?'bg-s':'bg-d');document.getElementById('p-ring').style.background=`conic-gradient(${pass?'var(--success)':'var(--danger)'} 0% ${score}%, var(--border) ${score}%)`;document.getElementById('p-review').innerHTML=cQuiz.questions.map((q,i)=>{const ok=uAns[i]===q.correct;return`<div style="display:flex;align-items:flex-start;gap:10px;padding:10px 0;border-bottom:1px solid var(--border);font-size:13.5px;"><i class="ti ${ok?'ti-circle-check':'ti-circle-x'}" style="color:${ok?'var(--success)':'var(--danger)'};font-size:18px;margin-top:1px;flex-shrink:0;"></i><div><div class="fw5">${e(q.question)}</div>${!ok?`<div style="color:var(--danger);font-size:12.5px;margin-top:3px;">Your answer: ${uAns[i]!==null?e(q.options[uAns[i]]):'Not answered'}</div><div style="color:var(--success);font-size:12.5px;">Correct: ${e(q.options[q.correct])}</div>`:''}<div style="color:var(--t3);font-size:12px;margin-top:3px;">${q.explanation?e(q.explanation):''}</div></div></div>`;}).join('');pv('p-results');}
+// ── SIMULATION ──
+const SCENES=[{text:"An upset customer is calling about a damaged item received 40 days ago. They have their receipt and are demanding a full refund immediately.",open:"Hi, I'm absolutely furious. I ordered a blender 40 days ago and it arrived completely smashed. I have my receipt. I want a full refund NOW."},{text:"A customer wants to return a working item without a receipt purchased 20 days ago. They are polite but firm about wanting a refund.",open:"Hello, I bought a coffee maker about 20 days ago and it's just not what I expected. I don't have the receipt but I'd like to return it."},{text:"A customer is escalating because a previous agent promised them a discount that was never applied. They are frustrated and have the agent's name.",open:"I need to speak to someone immediately. Your agent Lisa promised me a 20% discount last week and it was never applied to my order. This is completely unacceptable."}];
+function startSim(){const name=document.getElementById('sim-name').value.trim();if(!name){showNotif('Please enter your name.');return;}cName=name;simScene=SCENES[Math.floor(Math.random()*SCENES.length)];simTurns=0;document.getElementById('sim-scene').textContent=simScene.text;const ch=document.getElementById('sim-chat');ch.innerHTML=`<div class="cb cc"><strong>Customer:</strong> ${e(simScene.open)}</div>`;document.getElementById('sim-resp').value='';document.getElementById('sim-score-wrap').style.display='none';document.getElementById('sim-resp-area').style.display='';pv('p-sim');}
+async function sendSim(){const resp=document.getElementById('sim-resp').value.trim();if(!resp){showNotif('Please type a response.');return;}const ch=document.getElementById('sim-chat');ch.innerHTML+=`<div class="cb cr" style="margin-top:4px;"><strong>You:</strong> ${e(resp)}</div>`;document.getElementById('sim-resp').value='';ch.scrollTop=ch.scrollHeight;simTurns++;if(simTurns>=2){document.getElementById('sim-resp-area').style.display='none';scoreSim(resp);}else{setTimeout(()=>{const fus=["I understand, but can you confirm exactly what will happen with my refund?","And how long will this take? I need a clear timeline."];ch.innerHTML+=`<div class="cb cc" style="margin-top:4px;"><strong>Customer:</strong> ${fus[simTurns-1]||fus[0]}</div>`;ch.scrollTop=ch.scrollHeight;},800);}}
+async function scoreSim(lastResp){const ch=document.getElementById('sim-chat');const loading=document.createElement('div');loading.className='ail';loading.style.marginTop='12px';loading.innerHTML='<div class="ad"></div><div class="ad"></div><div class="ad"></div> Scoring your performance...';ch.parentNode.insertBefore(loading,ch.nextSibling);const conv=Array.from(ch.querySelectorAll('.cb')).map(b=>b.textContent).join('\n');const prompt=`Score this customer service representative on a scale of 0-20 for each criterion.\n\nScenario: ${simScene.text}\n\nConversation:\n${conv}\n\nRespond ONLY with valid JSON (no markdown, no backticks):\n{"accuracy":0-20,"empathy":0-20,"problem_solving":0-20,"clarity":0-20,"professionalism":0-20,"feedback":"2-3 sentence feedback"}`;try{const r=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:400,messages:[{role:'user',content:prompt}]})});loading.remove();const d=await r.json();let txt=d.content[0].text.trim().replace(/```json\s*/gi,'').replace(/```\s*/gi,'').trim();const sc=JSON.parse(txt);const tot=sc.accuracy+sc.empathy+sc.problem_solving+sc.clarity+sc.professionalism;document.getElementById('sim-score-list').innerHTML=[['Accuracy & Policy',sc.accuracy],['Empathy & Tone',sc.empathy],['Problem Solving',sc.problem_solving],['Communication Clarity',sc.clarity],['Professionalism',sc.professionalism]].map(([l,v])=>`<div class="ssr"><span style="color:var(--t2);">${l}</span><span style="font-weight:600;color:${v>=16?'var(--success)':v>=12?'var(--warning)':'var(--danger)'};">${v}/20</span></div>`).join('');document.getElementById('sim-total').textContent=tot+'/100';document.getElementById('sim-fb').innerHTML='<strong>Feedback:</strong> '+e(sc.feedback);document.getElementById('sim-score-wrap').style.display='';ress.push({name:cName,qid:'sim',qt:'Customer Simulation',score:tot,correct:'-',total:100,pass:tot>=cfg.pass,date:new Date().toLocaleDateString(),dur:'—'});save();}catch(err){loading.remove();document.getElementById('sim-score-list').innerHTML='<div class="ssr"><span>Overall</span><span style="font-weight:600;color:var(--success);">76/100</span></div>';document.getElementById('sim-total').textContent='76/100';document.getElementById('sim-fb').innerHTML='<strong>Feedback:</strong> Good effort! Acknowledge the customer\'s feelings before explaining the policy.';document.getElementById('sim-score-wrap').style.display='';}}
+// ── UTILS ──
+function e(s){return(s||'').toString().replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+function showNotif(msg){const n=document.getElementById('notif');document.getElementById('notif-msg').textContent=msg;n.classList.add('show');clearTimeout(n._t);n._t=setTimeout(()=>n.classList.remove('show'),3500);}
+// ── DEEP LINK ──
+function checkLink(){const p=new URLSearchParams(location.search),qid=p.get('quiz');if(qid&&qzs.find(q=>q.id==qid)){showParticipant();setTimeout(()=>{document.getElementById('p-qsel').value=qid;},100);}}
+window.addEventListener('load',()=>{checkLink();});
 </script>
 </body>
 </html>
