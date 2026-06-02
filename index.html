@@ -484,7 +484,7 @@ The more detail you include, the better the AI-generated questions will be."></t
     <div class="quiz-wrap">
       <div class="quiz-topbar">
         <div><div class="fw5" id="p-qz-title">Quiz</div><div style="font-size:12px;color:var(--t3);margin-top:3px;" id="p-qz-prog">Question 1</div></div>
-        <div class="timer-chip"><i class="ti ti-clock"></i><span id="p-timer">0m 0s</span></div>
+        <div class="timer-chip" style="display:none;"><i class="ti ti-clock"></i><span id="p-timer">0m 0s</span></div>
       </div>
       <div class="prog-bar mb-16"><div class="prog-fill" id="p-pb" style="width:0%;"></div></div>
       <div id="p-qc"></div>
@@ -575,108 +575,141 @@ function dbSet(k, v) {
   try { localStorage.setItem('tiq_' + k, JSON.stringify(v)); } catch(e) {}
 }
 
-var DEFAULT_MAT = {
-  id: 1000000001,
-  t: 'Order Cancellation Process',
-  c: "Order Cancellation Process\n\n1. Initiate the Cancellation Request\n- Open the order in CRM2.\n- Click the three dots on the order screen.\n- Select Request Cancellation.\n\n2. Wait for Confirmation\n- Allow a few seconds for the request to process.\n- Confirm that the status updates to Cancellation Accepted.\n\n3. Cancel the Order\n- Click More Actions.\n- Select Cancel Order.\n\n4. Process the Refund\n- Verify whether the refund was processed automatically.\n- If the refund was not processed, manually issue the refund to the customer.\n\n5. Document the Cancellation\n- Add an internal note explaining: why the order was canceled, who requested the cancellation, and any refund details or additional context.\n\nImportant: Always ensure a note is added before closing the order so there is a clear record of the cancellation and refund status.",
-  d: 'Pre-loaded'
-};
+var DEFAULT_MATS = [
+  {
+    id: 1000000001,
+    t: 'Order Cancellation Process',
+    c: "Order Cancellation Process\n\n1. Initiate the Cancellation Request\n- Open the order in CRM2.\n- Click the three dots on the order screen.\n- Select Request Cancellation.\n\n2. Wait for Confirmation\n- Allow a few seconds for the request to process.\n- Confirm that the status updates to Cancellation Accepted.\n\n3. Cancel the Order\n- Click More Actions.\n- Select Cancel Order.\n\n4. Process the Refund\n- Verify whether the refund was processed automatically.\n- If the refund was not processed, manually issue the refund to the customer.\n\n5. Document the Cancellation\n- Add an internal note explaining: why the order was canceled, who requested the cancellation, and any refund details or additional context.\n\nImportant: Always ensure a note is added before closing the order so there is a clear record of the cancellation and refund status.",
+    d: 'Pre-loaded'
+  },
+  {
+    id: 1000000003,
+    t: '30% Discount Codes for Signing Up',
+    c: "30% Discount Codes for Signing Up\n\n- This code is only valid for first orders.\n- Once a customer has placed an order, the code will no longer work.\n- Provide the customer with IMDTF20 if their account is not tagged with First time discount code used.\n- If the code is still not working, ask the customer to send a photo/screenshot of their cart.",
+    d: 'Pre-loaded'
+  },
+  {
+    id: 1000000005,
+    t: 'Customer Calls About an Email or Call Received',
+    c: "Customer Calls About an Email or Call They Received Regarding Their Order\n\nStep 1: Check Shopify\n- Open the customer order in Shopify.\n- Review the Timeline and the Notes section in the top right corner of the order.\n\nStep 2: Review Communication History\n- We will always send an email when there is an issue or action needed on the order.\n- The email details will explain exactly what the issue is and what information we need from the customer.\n- Any additional internal notes or updates can also be found in the order notes.\n\nStep 3: Assist the Customer\n- Use the information from the email and order notes to answer the customer questions.\n- Provide clarification on the issue and explain any next steps required from the customer.\n- If the issue has already been resolved, update the customer accordingly.\n\nKey Reminder: Before escalating or asking for help, always check the Shopify Timeline and Order Notes first.",
+    d: 'Pre-loaded'
+  },
+  {
+    id: 1000000007,
+    t: 'Customer Asking for a Patch Order Update',
+    c: "Customer Asking for a Patch Order Update\n\nStep 1: Check the Patch Calculator\n- Always refer to the Patch Calculator for the estimated production and delivery dates.\n- The calculator is the only approved source for patch order timelines.\n\nStep 2: Provide the Customer with the Estimated Date\n- Communicate the date shown in the calculator.\n- If the order is still within the estimated timeframe, advise the customer that their order is progressing as expected.\n\nStep 3: Set Proper Expectations\n- We cannot guarantee any delivery date other than the dates provided by the Patch Calculator.\n- Do not provide estimated dates based on assumptions, previous orders, or personal expectations.\n\nKey Reminder: Always use the Patch Calculator when discussing patch order timelines.",
+    d: 'Pre-loaded'
+  }
+];
 
-var DEFAULT_QUIZ = {
-  id: 1000000002,
-  title: 'Order Cancellation Process — Assessment',
-  matTitle: 'Order Cancellation Process',
-  created: 'Pre-loaded',
-  completions: 0,
-  questions: [
-    {
-      question: "What is the first step when initiating an order cancellation?",
-      type: "multiple_choice",
-      options: ["A. Click More Actions and select Cancel Order", "B. Open the order in CRM2 and click the three dots", "C. Add an internal note to the order", "D. Manually issue the refund to the customer"],
-      correct: 1,
-      explanation: "You must first open the order in CRM2 and click the three dots (⋮) to access the Request Cancellation option."
-    },
-    {
-      question: "After selecting 'Request Cancellation', what status should the order show before proceeding?",
-      type: "multiple_choice",
-      options: ["A. Cancellation Pending", "B. Order Closed", "C. Cancellation Accepted", "D. Refund Issued"],
-      correct: 2,
-      explanation: "You must wait and confirm the status updates to 'Cancellation Accepted' before moving forward."
-    },
-    {
-      question: "Where do you find the 'Cancel Order' option?",
-      type: "multiple_choice",
-      options: ["A. Under the three dots menu", "B. In the customer profile", "C. Under More Actions", "D. In the refund settings"],
-      correct: 2,
-      explanation: "After confirmation, click 'More Actions' then select 'Cancel Order' to complete the cancellation."
-    },
-    {
-      question: "True or False: Refunds are always processed automatically after a cancellation.",
-      type: "true_false",
-      options: ["True", "False"],
-      correct: 1,
-      explanation: "Refunds are not always automatic. You must verify whether it was processed, and if not, manually issue the refund."
-    },
-    {
-      question: "What must you always do before closing a cancelled order?",
-      type: "multiple_choice",
-      options: ["A. Email the customer a confirmation", "B. Add an internal note with cancellation details", "C. Escalate to a manager", "D. Issue store credit"],
-      correct: 1,
-      explanation: "An internal note must always be added explaining why the order was cancelled, who requested it, and any refund details."
-    },
-    {
-      question: "Which of the following should be included in the internal note on a cancelled order?",
-      type: "multiple_choice",
-      options: ["A. Customer's payment method only", "B. Why the order was cancelled, who requested it, and refund details", "C. The shipping carrier and tracking number", "D. The customer's account age and order history"],
-      correct: 1,
-      explanation: "The internal note must cover the reason for cancellation, who requested it, and any relevant refund information."
-    },
-    {
-      question: "True or False: You can close a cancelled order without adding an internal note if the cancellation was straightforward.",
-      type: "true_false",
-      options: ["True", "False"],
-      correct: 1,
-      explanation: "A note must ALWAYS be added before closing, regardless of how simple the cancellation was. This ensures a clear record."
-    },
-    {
-      question: "A customer's refund was not processed automatically after cancellation. What should you do?",
-      type: "multiple_choice",
-      options: ["A. Wait 24 hours and check again", "B. Ask the customer to contact their bank", "C. Manually issue the refund to the customer", "D. Escalate to tier-2 support immediately"],
-      correct: 2,
-      explanation: "If the refund was not automatically processed, you are responsible for manually issuing it to the customer."
-    },
-    {
-      question: "What is the correct order of steps for an order cancellation?",
-      type: "multiple_choice",
-      options: [
-        "A. Cancel Order → Request Cancellation → Issue Refund → Add Note",
-        "B. Request Cancellation → Confirm Status → Cancel Order → Verify/Issue Refund → Add Note",
-        "C. Add Note → Request Cancellation → Cancel Order → Refund",
-        "D. Confirm Status → Cancel Order → Request Cancellation → Add Note"
-      ],
-      correct: 1,
-      explanation: "The correct sequence is: Request Cancellation → wait for Cancellation Accepted → Cancel Order → verify/issue refund → add internal note."
-    },
-    {
-      question: "True or False: The internal cancellation note only needs to include the reason for cancellation.",
-      type: "true_false",
-      options: ["True", "False"],
-      correct: 1,
-      explanation: "The note must include three things: why the order was cancelled, who requested the cancellation, and any refund details or additional context."
-    }
-  ]
-};
+var DEFAULT_QUIZZES = [
+  {
+    id: 1000000002,
+    title: 'Order Cancellation Process — Assessment',
+    matTitle: 'Order Cancellation Process',
+    created: 'Pre-loaded',
+    completions: 0,
+    questions: [
+      { question: "What is the first step when initiating an order cancellation?", type: "multiple_choice", options: ["A. Click More Actions and select Cancel Order", "B. Open the order in CRM2 and click the three dots", "C. Add an internal note to the order", "D. Manually issue the refund to the customer"], correct: 1, explanation: "You must first open the order in CRM2 and click the three dots to access Request Cancellation." },
+      { question: "After selecting Request Cancellation, what status must appear before proceeding?", type: "multiple_choice", options: ["A. Cancellation Pending", "B. Order Closed", "C. Cancellation Accepted", "D. Refund Issued"], correct: 2, explanation: "You must confirm the status updates to Cancellation Accepted before moving forward." },
+      { question: "Where do you find the Cancel Order option?", type: "multiple_choice", options: ["A. Under the three dots menu", "B. In the customer profile", "C. Under More Actions", "D. In the refund settings"], correct: 2, explanation: "Click More Actions then select Cancel Order." },
+      { question: "True or False: Refunds are always processed automatically after a cancellation.", type: "true_false", options: ["True", "False"], correct: 1, explanation: "Refunds are not always automatic. Verify and manually issue if needed." },
+      { question: "What must you always do before closing a cancelled order?", type: "multiple_choice", options: ["A. Email the customer", "B. Add an internal note with cancellation details", "C. Escalate to a manager", "D. Issue store credit"], correct: 1, explanation: "An internal note must always be added before closing." },
+      { question: "What must the internal cancellation note include?", type: "multiple_choice", options: ["A. Payment method only", "B. Why cancelled, who requested it, and refund details", "C. Shipping carrier and tracking number", "D. Customer order history"], correct: 1, explanation: "The note must cover reason, who requested it, and refund details." },
+      { question: "True or False: You can close a cancelled order without a note if it was straightforward.", type: "true_false", options: ["True", "False"], correct: 1, explanation: "A note must ALWAYS be added before closing, no exceptions." },
+      { question: "The refund was not processed automatically. What do you do?", type: "multiple_choice", options: ["A. Wait 24 hours", "B. Ask the customer to contact their bank", "C. Manually issue the refund", "D. Escalate immediately"], correct: 2, explanation: "If not automatic, manually issue the refund to the customer." },
+      { question: "What is the correct sequence for an order cancellation?", type: "multiple_choice", options: ["A. Cancel Order then Request Cancellation then Refund then Note", "B. Request Cancellation then Confirm Status then Cancel Order then Refund then Note", "C. Add Note then Request Cancellation then Cancel Order then Refund", "D. Confirm Status then Cancel Order then Request Cancellation then Note"], correct: 1, explanation: "Request Cancellation, confirm Accepted, Cancel Order, verify/issue refund, add note." },
+      { question: "True or False: The internal note only needs to include the reason for cancellation.", type: "true_false", options: ["True", "False"], correct: 1, explanation: "The note needs three things: reason, who requested it, and refund details." }
+    ]
+  },
+  {
+    id: 1000000004,
+    title: '30% Discount Codes — Assessment',
+    matTitle: '30% Discount Codes for Signing Up',
+    created: 'Pre-loaded',
+    completions: 0,
+    questions: [
+      { question: "The 30% sign-up discount code is valid for how many orders?", type: "multiple_choice", options: ["A. Unlimited orders", "B. First order only", "C. First three orders", "D. Any order under $50"], correct: 1, explanation: "The code is only valid for a customer's first order." },
+      { question: "True or False: A customer who has already placed an order can still use the 30% sign-up discount code.", type: "true_false", options: ["True", "False"], correct: 1, explanation: "Once a customer has placed an order, the code will no longer work." },
+      { question: "What is the discount code you provide to eligible first-time customers?", type: "multiple_choice", options: ["A. FIRSTORDER30", "B. WELCOME30", "C. IMDTF20", "D. SIGNUP30"], correct: 2, explanation: "The correct code is IMDTF20." },
+      { question: "Before providing the discount code, what must you check on the customer account?", type: "multiple_choice", options: ["A. That they have a valid email", "B. That the account is not tagged with First time discount code used", "C. That their order total is over $20", "D. That they signed up within the last 30 days"], correct: 1, explanation: "Confirm the account is NOT tagged with First time discount code used before providing the code." },
+      { question: "A customer says the discount code is not working. What do you do next?", type: "multiple_choice", options: ["A. Issue a manual 30% refund", "B. Tell them the code has expired", "C. Ask them to send a photo or screenshot of their cart", "D. Escalate to a manager immediately"], correct: 2, explanation: "If the code still is not working, ask the customer to send a screenshot of their cart." },
+      { question: "True or False: You can provide the discount code to any customer who asks regardless of order history.", type: "true_false", options: ["True", "False"], correct: 1, explanation: "The code is only for first-time customers whose account is not already tagged." },
+      { question: "A customer placed their first order last week and wants the code on a second order. What do you tell them?", type: "multiple_choice", options: ["A. Apply it as a one-time exception", "B. The code is only valid for first orders and can no longer be applied", "C. Escalate to a manager to approve", "D. Ask them to create a new account"], correct: 1, explanation: "The code is for first orders only. Once an order has been placed it will not work again." }
+    ]
+  },
+  {
+    id: 1000000006,
+    title: 'Order Email and Call Enquiries — Assessment',
+    matTitle: 'Customer Calls About an Email or Call Received',
+    created: 'Pre-loaded',
+    completions: 0,
+    questions: [
+      { question: "When a customer calls about an email regarding their order, what is the first thing you do?", type: "multiple_choice", options: ["A. Ask the customer to forward the email to support", "B. Open the order in Shopify and check the Timeline and Notes", "C. Escalate to a manager right away", "D. Ask the customer to describe the issue before checking anything"], correct: 1, explanation: "Always open the order in Shopify first and review the Timeline and Notes section." },
+      { question: "Where in Shopify do you find internal notes and updates on an order?", type: "multiple_choice", options: ["A. The customer profile page", "B. The billing section", "C. The Timeline and Notes section in the top right of the order", "D. The shipping tab"], correct: 2, explanation: "The Timeline and Notes section contains all relevant updates and internal notes." },
+      { question: "True or False: We always send an email to the customer when there is an issue or action needed on their order.", type: "true_false", options: ["True", "False"], correct: 0, explanation: "We always send an email when there is an issue or action needed." },
+      { question: "A customer calls about an email they do not understand. What do you do?", type: "multiple_choice", options: ["A. Ask them to re-read the email themselves", "B. Escalate to a supervisor immediately", "C. Check the Shopify order notes and email details then clarify the issue and explain next steps", "D. Tell them to reply to the email directly"], correct: 2, explanation: "Use the Shopify order information to understand and explain the issue to the customer." },
+      { question: "True or False: You should escalate before checking the Shopify Timeline and Order Notes.", type: "true_false", options: ["True", "False"], correct: 1, explanation: "Always check Shopify first. Most information you need is already documented there." },
+      { question: "If the issue in the email has already been resolved, what do you do?", type: "multiple_choice", options: ["A. Tell the customer to ignore the email", "B. Update the customer and let them know it has been resolved", "C. Ask the customer to submit a new support ticket", "D. Re-open the issue to double check"], correct: 1, explanation: "If already resolved, simply update the customer accordingly." },
+      { question: "What is the key reminder before escalating any order enquiry?", type: "multiple_choice", options: ["A. Always call the customer back rather than using chat", "B. Always check the Shopify Timeline and Order Notes first", "C. Always get manager approval before responding", "D. Always ask for a screenshot first"], correct: 1, explanation: "Before escalating, always check Shopify. Most of what you need is already documented there." }
+    ]
+  },
+  {
+    id: 1000000008,
+    title: 'Patch Order Updates — Assessment',
+    matTitle: 'Customer Asking for a Patch Order Update',
+    created: 'Pre-loaded',
+    completions: 0,
+    questions: [
+      { question: "Where should you always look first when a customer asks for a patch order update?", type: "multiple_choice", options: ["A. The customer email history", "B. The Patch Calculator", "C. The Shopify order timeline", "D. Previous similar orders"], correct: 1, explanation: "The Patch Calculator is the only approved source for patch order timelines." },
+      { question: "True or False: You can provide a patch order delivery estimate based on a similar previous order.", type: "true_false", options: ["True", "False"], correct: 1, explanation: "Never estimate based on previous orders. Only use the Patch Calculator." },
+      { question: "A customer's patch order is still within the Patch Calculator timeframe. What do you tell them?", type: "multiple_choice", options: ["A. Their order may be delayed", "B. Their order is progressing as expected", "C. You will escalate and get back to them", "D. The order should have already arrived"], correct: 1, explanation: "If within the estimated timeframe, advise the customer the order is progressing as expected." },
+      { question: "True or False: You can guarantee a delivery date if you are confident the order is on track.", type: "true_false", options: ["True", "False"], correct: 1, explanation: "We cannot guarantee any delivery date other than what is shown in the Patch Calculator." },
+      { question: "A customer insists on a firm delivery date. What do you do?", type: "multiple_choice", options: ["A. Give your best personal estimate", "B. Promise the earliest date in the calculator", "C. Explain that the only date you can provide is from the Patch Calculator and share that date", "D. Escalate immediately without checking the calculator"], correct: 2, explanation: "Always refer to the Patch Calculator and communicate only what it shows." },
+      { question: "What is the only approved source for patch order delivery timelines?", type: "multiple_choice", options: ["A. The Shopify order page", "B. Your team leader", "C. The Patch Calculator", "D. The customer order confirmation email"], correct: 2, explanation: "The Patch Calculator is the only approved source for patch order timelines." },
+      { question: "True or False: It is acceptable to commit to a delivery date based on personal expectations if the calculator is unavailable.", type: "true_false", options: ["True", "False"], correct: 1, explanation: "Never commit to dates based on personal expectations. Escalate rather than guess." }
+    ]
+  }
+  ,
+  {
+    id: 1000000009,
+    title: 'Full Knowledge Assessment — All Topics',
+    matTitle: 'All Topics',
+    created: 'Pre-loaded',
+    completions: 0,
+    questions: [
+      { question: "What is the first step when initiating an order cancellation in CRM2?", type: "multiple_choice", options: ["A. Click More Actions and select Cancel Order", "B. Open the order in CRM2 and click the three dots", "C. Add an internal note to the order", "D. Issue the refund first"], correct: 1, explanation: "Open the order in CRM2, click the three dots, then select Request Cancellation." },
+      { question: "What status must appear on the order before you proceed to cancel it?", type: "multiple_choice", options: ["A. Cancellation Pending", "B. Order Closed", "C. Cancellation Accepted", "D. Refund Issued"], correct: 2, explanation: "You must confirm the status updates to Cancellation Accepted before proceeding." },
+      { question: "True or False: Refunds are always processed automatically after a cancellation.", type: "true_false", options: ["True", "False"], correct: 1, explanation: "Refunds are not always automatic. You must verify and manually issue if needed." },
+      { question: "What must always be added before closing a cancelled order?", type: "multiple_choice", options: ["A. A follow-up email to the customer", "B. An internal note covering reason, who requested it, and refund details", "C. A manager approval", "D. A shipping update"], correct: 1, explanation: "An internal note is mandatory before closing — it must include why, who requested it, and refund details." },
+      { question: "What is the 30% sign-up discount code for eligible first-time customers?", type: "multiple_choice", options: ["A. FIRSTORDER30", "B. WELCOME30", "C. IMDTF20", "D. SIGNUP30"], correct: 2, explanation: "The correct code is IMDTF20." },
+      { question: "Before providing the discount code, what must you check on the account?", type: "multiple_choice", options: ["A. That their order total is over $20", "B. That the account is not tagged with First time discount code used", "C. That they signed up within 30 days", "D. That they have a valid email"], correct: 1, explanation: "Confirm the account is NOT tagged with First time discount code used before giving the code." },
+      { question: "True or False: A customer who already placed an order can still use the 30% sign-up code.", type: "true_false", options: ["True", "False"], correct: 1, explanation: "The code is for first orders only. Once an order is placed it will not work again." },
+      { question: "A customer calls about an email they received. What is the first thing you should do?", type: "multiple_choice", options: ["A. Ask them to forward the email", "B. Open the order in Shopify and check the Timeline and Notes", "C. Escalate to a manager", "D. Ask the customer to describe the issue in full first"], correct: 1, explanation: "Always check the Shopify Timeline and Order Notes first before anything else." },
+      { question: "True or False: You should escalate an order enquiry before checking Shopify.", type: "true_false", options: ["True", "False"], correct: 1, explanation: "Always check the Shopify Timeline and Order Notes first. Most answers are already there." },
+      { question: "What is the only approved source for patch order delivery timelines?", type: "multiple_choice", options: ["A. The Shopify order page", "B. Your team leader", "C. The Patch Calculator", "D. The customer confirmation email"], correct: 2, explanation: "The Patch Calculator is the only approved source for patch order timelines." },
+      { question: "True or False: You can give a customer a firm delivery date for their patch order based on your personal expectations.", type: "true_false", options: ["True", "False"], correct: 1, explanation: "Never commit to dates based on personal expectations. Only share what the Patch Calculator shows." },
+      { question: "A patch order is within the Patch Calculator timeframe. What do you tell the customer?", type: "multiple_choice", options: ["A. Their order may be delayed", "B. Their order is progressing as expected", "C. You will escalate and get back to them", "D. The order should have already arrived"], correct: 1, explanation: "If within the estimated timeframe, advise the customer the order is progressing as expected." }
+    ]
+  }
+];
 
-// Seed default data on first load
+// Always ensure all default quizzes and materials exist
 (function seedDefaults() {
-  var existingMats = dbGet('mats', null);
-  var existingQzs  = dbGet('qzs', null);
-  if (existingMats === null) dbSet('mats', [DEFAULT_MAT]);
-  if (existingQzs  === null) dbSet('qzs',  [DEFAULT_QUIZ]);
+  var m = dbGet('mats', []);
+  var q = dbGet('qzs', []);
+  var changed = false;
+  DEFAULT_MATS.forEach(function(dm) {
+    if (!m.some(function(x) { return x.id === dm.id; })) { m.push(dm); changed = true; }
+  });
+  DEFAULT_QUIZZES.forEach(function(dq) {
+    if (!q.some(function(x) { return x.id === dq.id; })) { q.push(dq); changed = true; }
+  });
+  if (changed) { dbSet('mats', m); dbSet('qzs', q); }
 })();
 
-var mats = dbGet('mats', [DEFAULT_MAT]);
-var qzs  = dbGet('qzs', [DEFAULT_QUIZ]);
+var mats = dbGet('mats', DEFAULT_MATS);
+var qzs  = dbGet('qzs', DEFAULT_QUIZZES);
 var ress = dbGet('ress', []);
 var cfg  = dbGet('cfg', { pass: 75, sr: 'yes', rt: 'yes', co: '' });
 var adminPw = dbGet('pw', 'admin123');
