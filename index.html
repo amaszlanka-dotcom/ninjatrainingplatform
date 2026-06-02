@@ -694,8 +694,18 @@ var DEFAULT_QUIZZES = [
   }
 ];
 
-// Always ensure all default quizzes and materials exist
+// Force-sync all built-in quizzes and materials every load
 (function seedDefaults() {
+  var DATA_VERSION = 5;
+  var storedVersion = dbGet('data_version', 0);
+
+  // If version changed, wipe old quiz/mat data so fresh defaults load cleanly
+  if (storedVersion < DATA_VERSION) {
+    localStorage.removeItem('tiq_mats');
+    localStorage.removeItem('tiq_qzs');
+    dbSet('data_version', DATA_VERSION);
+  }
+
   var m = dbGet('mats', []);
   var q = dbGet('qzs', []);
   var changed = false;
