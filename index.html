@@ -696,33 +696,21 @@ var DEFAULT_QUIZZES = [
 
 // Force-sync all built-in quizzes and materials every load
 // Returns the final arrays directly so var declarations use the same data
-var _seeded = (function seedDefaults() {
-  var DATA_VERSION = 6;
-  var storedVersion = dbGet('data_version', 0);
+// Hardcoded — no localStorage dependency for built-in content
+var mats = DEFAULT_MATS.slice();
+var qzs  = DEFAULT_QUIZZES.slice();
 
-  if (storedVersion < DATA_VERSION) {
-    localStorage.removeItem('tiq_mats');
-    localStorage.removeItem('tiq_qzs');
-    dbSet('data_version', DATA_VERSION);
-  }
-
-  var m = dbGet('mats', []);
-  var q = dbGet('qzs', []);
-
-  DEFAULT_MATS.forEach(function(dm) {
-    if (!m.some(function(x) { return x.id === dm.id; })) { m.push(dm); }
+// Merge in any user-created items from localStorage
+(function() {
+  var savedMats = dbGet('mats', []);
+  var savedQzs  = dbGet('qzs', []);
+  savedMats.forEach(function(m) {
+    if (!mats.some(function(x) { return x.id === m.id; })) { mats.push(m); }
   });
-  DEFAULT_QUIZZES.forEach(function(dq) {
-    if (!q.some(function(x) { return x.id === dq.id; })) { q.push(dq); }
+  savedQzs.forEach(function(q) {
+    if (!qzs.some(function(x) { return x.id === q.id; })) { qzs.push(q); }
   });
-
-  dbSet('mats', m);
-  dbSet('qzs', q);
-  return { mats: m, qzs: q };
 })();
-
-var mats = _seeded.mats;
-var qzs  = _seeded.qzs;
 var ress = dbGet('ress', []);
 var cfg  = dbGet('cfg', { pass: 75, sr: 'yes', rt: 'yes', co: '' });
 var adminPw = dbGet('pw', 'admin123');
@@ -731,10 +719,13 @@ var cQuiz = null, cIdx = 0, uAns = [], tInt = null, tStart = null;
 var cName = '', pendingQZ = null, simScene = null, simTurns = 0;
 
 function saveAll() {
-  dbSet('mats', mats);
-  dbSet('qzs', qzs);
+  // Only save user-created items (id not in built-in range)
+  var userMats = mats.filter(function(m) { return m.id < 1000000001 || m.id > 1000000099; });
+  var userQzs  = qzs.filter(function(q)  { return q.id < 1000000001 || q.id > 1000000099; });
+  dbSet('mats', userMats);
+  dbSet('qzs',  userQzs);
   dbSet('ress', ress);
-  dbSet('cfg', cfg);
+  dbSet('cfg',  cfg);
 }
 
 // ═══════════════════════════════
