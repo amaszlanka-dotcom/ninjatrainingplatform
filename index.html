@@ -695,11 +695,11 @@ var DEFAULT_QUIZZES = [
 ];
 
 // Force-sync all built-in quizzes and materials every load
-(function seedDefaults() {
-  var DATA_VERSION = 5;
+// Returns the final arrays directly so var declarations use the same data
+var _seeded = (function seedDefaults() {
+  var DATA_VERSION = 6;
   var storedVersion = dbGet('data_version', 0);
 
-  // If version changed, wipe old quiz/mat data so fresh defaults load cleanly
   if (storedVersion < DATA_VERSION) {
     localStorage.removeItem('tiq_mats');
     localStorage.removeItem('tiq_qzs');
@@ -708,18 +708,21 @@ var DEFAULT_QUIZZES = [
 
   var m = dbGet('mats', []);
   var q = dbGet('qzs', []);
-  var changed = false;
+
   DEFAULT_MATS.forEach(function(dm) {
-    if (!m.some(function(x) { return x.id === dm.id; })) { m.push(dm); changed = true; }
+    if (!m.some(function(x) { return x.id === dm.id; })) { m.push(dm); }
   });
   DEFAULT_QUIZZES.forEach(function(dq) {
-    if (!q.some(function(x) { return x.id === dq.id; })) { q.push(dq); changed = true; }
+    if (!q.some(function(x) { return x.id === dq.id; })) { q.push(dq); }
   });
-  if (changed) { dbSet('mats', m); dbSet('qzs', q); }
+
+  dbSet('mats', m);
+  dbSet('qzs', q);
+  return { mats: m, qzs: q };
 })();
 
-var mats = dbGet('mats', DEFAULT_MATS);
-var qzs  = dbGet('qzs', DEFAULT_QUIZZES);
+var mats = _seeded.mats;
+var qzs  = _seeded.qzs;
 var ress = dbGet('ress', []);
 var cfg  = dbGet('cfg', { pass: 75, sr: 'yes', rt: 'yes', co: '' });
 var adminPw = dbGet('pw', 'admin123');
